@@ -3,6 +3,11 @@
 ## Initial Setup
 1. `cd functions && yarn install`
 
+## Tests
+Written with [mocha](https://mochajs.org/) and [expect](https://github.com/mjackson/expect).
+
+1. `cd functions && yarn test`
+
 ## GCP Configuration
 
 ### Topics

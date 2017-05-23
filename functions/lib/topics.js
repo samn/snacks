@@ -1,0 +1,1 @@
+exports.receivedAttachments = 'received-attachments';

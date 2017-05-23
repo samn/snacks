@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const expect = require('expect')
 const makeReceivedAttachments = require('../../lib/pubsub/receivedAttachments');
 const requestBody = require('../fixtures/requests/receiveEmail/body.json');
@@ -13,7 +14,7 @@ function makeEvent(json) {
 
 describe('receivedAttachments', function() {
   beforeEach(function() {
-    this.receivedAttachments = makeReceivedAttachments();
+    this.receivedAttachments = makeReceivedAttachments(2000);
   });
 
   it('runs successfully', function() {
@@ -23,6 +24,16 @@ describe('receivedAttachments', function() {
 
   it('exits when missing attachments data', function() {
     const event = makeEvent();
+    this.receivedAttachments(event);
+  });
+
+  it('skips attachments that are too large', function() {
+    const event = makeEvent(_.extend({}, attachments, { size: 10000 }));
+    this.receivedAttachments(event);
+  });
+
+  it('skips attachments with non-image content types', function() {
+    const event = makeEvent(_.extend({}, attachments, { 'content-type': 'application/pdf' }));
     this.receivedAttachments(event);
   });
 });

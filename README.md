@@ -1,5 +1,5 @@
 # snacks
 
 ## Functions
-See [README.md](functions/README.md)
+See [functions/README.md](functions/README.md)
 

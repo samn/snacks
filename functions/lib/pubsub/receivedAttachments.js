@@ -8,7 +8,7 @@
   }
 ]
 */
-module.exports = function makeReceivedAttachments() {
+module.exports = function makeReceivedAttachments(maxFileSizeBytes) {
   return function receivedAttachments(event) {
     console.log('Got event data', event.data.json);
     const eventData = event.data.json;
@@ -17,5 +17,18 @@ module.exports = function makeReceivedAttachments() {
     }
 
     const attachments = eventData.attachments;
+    attachments.forEach((attachment) => {
+      // attachment.size is in bytes
+      if (attachment.size > maxFileSizeBytes) {
+        console.log(`Attachment with name ${attachment.name} with ${attachment.size} is too long, skipping.`);
+        return;
+      }
+
+      // TODO stricter allow list of image formats
+      if (!attachment['content-type'].startsWith('image')) {
+        console.log(`Attachment with name ${attachment.name} has invalid content-type ( ${attachment['content-type']}, skipping.`);
+        return;
+      }
+    });
   };
 };

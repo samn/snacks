@@ -14,7 +14,7 @@
     "X-Gm-Message-State": "AODbwcDFotpJoIk2oetDCeaSYRpCW+GBXAXIu/WJPe",
     "X-Mailgun-Incoming": "Yes",
     "X-Received": "by 10.10.10.10 with SMTP id 25673081iop.128.1495545455551; Tue, 23 May 2017 06:17:35 -0700 (PDT)",
-    "attachments": "[{\"url\": \"https://sw.api.mailgun.net/v3/domains/mail/messages/eyJwIjpmYWxzZSwiayI6ImViYzU5NzNiLWY1NDUtNGZmYS1iMjcxLTA0ZWQwNTU3ZTE2NSIsInMiOiI3NjI5YWU1MDE1IiwiYyI6InRhbmtiIn0=/attachments/0\", \"content-type\": \"image/jpeg\", \"name\": \"IMG_8138.jpg\", \"size\": 100243}]",
+    "attachments": "[{\"url\": \"https://sw.api.mailgun.net/v3/domains/mail/messages/eyJwIjpmYWxzZSwiayI6ImViYzU5NzNiLWY1NDUtNGZmYS1iMjcxLTA0ZWQwNTU3ZTE2NSIsInMiOiI3NjI5YWU1MDE1IiwiYyI6InRhbmtiIn0=/attachments/0\", \"content-type\": \"image/jpeg\", \"name\": \"IMG_8138.jpg\", \"size\": 1000}]",
     "body-html": "<div dir=\"ltr\">body content<img src=\"cid:ii_15c3573bb13c017b\" alt=\"Inline image 1\" width=\"544\" height=\"543\"></div>\r\n",
     "body-plain": "body content[image: Inline image 1]\r\n",
     "content-id-map": "{\"<ii_15c3573bb13c017b>\": \"https://sw.api.mailgun.net/v3/domains/mail/messages/eyJwIjpmYWxzZSwiayI6ImViYzU5NzNiLWY1NDUtNGZmYS1iMjcxLTA0ZWQwNTU3ZTE2NSIsInMiOiI3NjI5YWU1MDE1IiwiYyI6InRhbmtiIn0=/attachments/0\"}",

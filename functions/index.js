@@ -7,4 +7,5 @@ const makeReceivedAttachments = require('./lib/pubsub/receivedAttachments');
 
 exports.receiveEmail = functions.https.onRequest(makeReceiveEmail(pubSub, topics.receivedAttachments));
 
-exports.receivedAttachmentsPubSub = functions.pubsub.topic(topics.receivedAttachments).onPublish(makeReceivedAttachments());
+const maxFileSizeBytes = 10 * 1000 * 1000; // 10 mb
+exports.receivedAttachmentsPubSub = functions.pubsub.topic(topics.receivedAttachments).onPublish(makeReceivedAttachments(maxFileSizeBytes));

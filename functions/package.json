@@ -2,12 +2,13 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "scripts": {
-    "test": "mocha test/**/*.js"
+    "test": "mocha test/*.js test/**/*.js"
   },
   "dependencies": {
     "@google-cloud/pubsub": "^0.12.0",
     "firebase-admin": "~4.2.1",
-    "firebase-functions": "^0.5.7"
+    "firebase-functions": "^0.5.7",
+    "request-promise": "^4.2.1"
   },
   "private": true,
   "devDependencies": {
@@ -15,6 +16,7 @@
     "expect": "^1.20.2",
     "express": "^4.15.3",
     "mocha": "^3.4.1",
+    "nock": "^9.0.13",
     "supertest": "^3.0.0"
   }
 }

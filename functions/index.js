@@ -1,7 +1,7 @@
 const functions = require('firebase-functions');
 const pubSub = require('@google-cloud/pubsub')();
 
-const topics = require('./lib/topics');
+const topics = require('./lib/pubsub/topics');
 const makeReceiveEmail = require('./lib/http/receiveEmail');
 const makeReceivedAttachments = require('./lib/pubsub/receivedAttachments');
 

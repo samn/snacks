@@ -8,7 +8,7 @@ function makeEvent(requestIdsToReplay) {
   return {
     data: {
       attributes: {
-        requestId: 'uuid',
+        requestId: 'objectId',
       },
       json: {
         requestIdsToReplay
@@ -27,17 +27,17 @@ describe('replayJobs', function() {
 
   it('runs successfully', function() {
     this.cloudStorage.download.resolves([JSON.stringify(requestBody)]);
-    const event = makeEvent(['uuid']);
+    const event = makeEvent(['objectId']);
     return this.replayJobs(event)
       .then(() => {
-        expect(this.cloudStorage.download).toBeCalledWith('/requests/receiveEmail/uuid.json')
+        expect(this.cloudStorage.download).toBeCalledWith('/requests/receiveEmail/objectId.json')
 
         const pubSubMessage = {
           data: {
             attachments: JSON.parse(requestBody.attachments),
           },
           attributes: {
-            requestId: 'uuid',
+            requestId: 'objectId',
           },
         };
         expect(this.pubSub.publish).toBeCalledWith(pubSubMessage, { raw: true });

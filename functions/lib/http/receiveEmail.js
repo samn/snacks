@@ -1,8 +1,8 @@
 const Logger = require('../Logger');
 
-module.exports = function makeReceiveEmail(pubSub, cloudStorage, localFS, uuid) {
+module.exports = function makeReceiveEmail(pubSub, cloudStorage, localFS, objectId) {
   return function receiveEmail(request, response) {
-    const requestId = uuid();
+    const requestId = objectId.generate();
     const log = new Logger(requestId);
 
     // attachments is a JSON encoded string, see test/fixtures/requests/receiveEmail/body.json

@@ -13,9 +13,11 @@ describe('receiveEmail', function() {
     this.cloudStorage = fakes.cloudStorage();
     this.localFS = fakes.localFS();
 
-    const uuid = _.constant('uuid');
+    const objectId = {
+      generate: _.constant('objectId'),
+    };
 
-    const receieveEmail = makeReceiveEmail(this.pubSub, this.cloudStorage, this.localFS, uuid);
+    const receieveEmail = makeReceiveEmail(this.pubSub, this.cloudStorage, this.localFS, objectId);
     const app = express()
       .use(bodyParser.json())
       .post('/', receieveEmail);
@@ -35,14 +37,14 @@ describe('receiveEmail', function() {
     return this.makeRequest().expect(200)
       .then(() => {
         expect(this.localFS.writeJSON).toBeCalledWith(
-          '/tmp/uuid.json',
+          '/tmp/objectId.json',
           requestBody
         );
 
         expect(this.cloudStorage.upload).toBeCalledWith(
-          '/tmp/uuid.json',
+          '/tmp/objectId.json',
           {
-            destination: '/requests/receiveEmail/uuid.json',
+            destination: '/requests/receiveEmail/objectId.json',
             resumable: false,
           }
         );
@@ -52,7 +54,7 @@ describe('receiveEmail', function() {
             attachments: JSON.parse(requestBody.attachments),
           },
           attributes: {
-            requestId: 'uuid',
+            requestId: 'objectId',
           },
         };
         expect(this.pubSub.publish).toBeCalledWith(pubSubMessage, { raw: true });

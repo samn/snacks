@@ -2,7 +2,7 @@ const functions = require('firebase-functions');
 const gPubSub = require('@google-cloud/pubsub')();
 const gcs = require('@google-cloud/storage')();
 const fs = require('fs-extra');
-const uuid = require('uuid');
+const ObjectID = require('bson-objectid');
 
 const topics = require('./lib/pubsub/topics');
 const makeReceiveEmail = require('./lib/http/receiveEmail');
@@ -40,7 +40,7 @@ const localFS = {
 const receivedAttachmentsPubSub = makePubSub(topics.receivedAttachments);
 const incomingMessagesCloudStorage = makeCloudStorage(functions.config().incomingmessages.bucket);
 
-const receiveEmail = makeReceiveEmail(receivedAttachmentsPubSub, incomingMessagesCloudStorage, localFS, uuid);
+const receiveEmail = makeReceiveEmail(receivedAttachmentsPubSub, incomingMessagesCloudStorage, localFS, ObjectID);
 exports.receiveEmail = functions.https.onRequest(receiveEmail);
 
 const maxFileSizeBytes = 10 * 1000 * 1000; // 10 mb

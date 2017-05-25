@@ -8,7 +8,7 @@ function makeEvent(json) {
   return {
     data: {
       attributes: {
-        requestId: 'uuid',
+        requestId: 'objectId',
       },
       json,
     },

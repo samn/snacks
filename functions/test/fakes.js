@@ -1,61 +1,22 @@
 const expect = require('expect')
+const sinon = require('sinon');
 
-exports.pubSub = function makeFakePubSub(opts) {
-  expect(opts).toExist();
-  return {
-    publish(message, options) {
-      expect(message).toEqual(opts.message);
-      expect(options).toEqual({
-        raw: true,
-      });
-
-      if (opts.err) {
-        return Promise.reject(opts.err);
-      } else {
-        return Promise.resolve();
-      }
-    },
-  };
+exports.pubSub = function makeFakePubSub() {
+  return sinon.stub({
+    publish(message, options) { }
+  });
 }
 
-exports.cloudStorage = function makeFakeCloudStorage(opts) {
-  expect(opts).toExist();
-  return {
-    upload(path, options) {
-      expect(path).toEqual(opts.path);
-      expect(options).toEqual(opts.options)
-
-      if (opts.err) {
-        return Promise.reject(opts.err);
-      } else {
-        return Promise.resolve();
-      }
-    },
-    download(path) {
-      expect(path).toEqual(opts.path);
-
-      if (opts.err) {
-        return Promise.reject(opts.err);
-      } else {
-        return Promise.resolve(opts.data);
-      }
-    }
-  };
+exports.cloudStorage = function makeFakeCloudStorage() {
+  return sinon.stub({
+    upload(path, options) { },
+    download(path) { }
+  });
 }
 
-exports.localFS = function makeFakeLocalFS(opts) {
-  expect(opts).toExist();
-  return {
-    writeJSON(path, data) {
-      expect(data).toEqual(opts.data);
-      expect(path).toEqual(opts.path);
-
-      if (opts.err) {
-        return Promise.reject(opts.err);
-      } else {
-        return Promise.resolve();
-      }
-    },
-  };
+exports.localFS = function makeFakeLocalFS() {
+  return sinon.stub({
+    writeJSON(path, data) { },
+  });
 }
 

@@ -9,40 +9,13 @@ const fakes = require('../fakes');
 
 describe('receiveEmail', function() {
   beforeEach(function() {
-    const attachments = JSON.parse(requestBody.attachments);
-    this.pubSubOptions = {
-      message: {
-        data: {
-          attachments,
-        },
-        attributes: {
-          requestId: 'uuid',
-        },
-      },
-      err: undefined,
-    };
-    const pubSub = fakes.pubSub(this.pubSubOptions);
-
-    this.cloudStorageOptions = {
-      path: '/tmp/uuid.json',
-      options: {
-        destination: '/requests/receiveEmail/uuid.json',
-        resumable: false,
-      },
-      err: undefined,
-    };
-    const cloudStorage = fakes.cloudStorage(this.cloudStorageOptions);
-
-    this.localFSOptions = {
-      path: '/tmp/uuid.json',
-      data: requestBody,
-      err: undefined,
-    };
-    const localFS = fakes.localFS(this.localFSOptions);
+    this.pubSub = fakes.pubSub();
+    this.cloudStorage = fakes.cloudStorage();
+    this.localFS = fakes.localFS();
 
     const uuid = _.constant('uuid');
 
-    const receieveEmail = makeReceiveEmail(pubSub, cloudStorage, localFS, uuid);
+    const receieveEmail = makeReceiveEmail(this.pubSub, this.cloudStorage, this.localFS, uuid);
     const app = express()
       .use(bodyParser.json())
       .post('/', receieveEmail);
@@ -56,21 +29,51 @@ describe('receiveEmail', function() {
   });
 
   it('returns 200 on success', function() {
-    return this.makeRequest().expect(200);
+    this.localFS.writeJSON.resolves();
+    this.pubSub.publish.resolves();
+    this.cloudStorage.upload.resolves();
+    return this.makeRequest().expect(200)
+      .then(() => {
+        expect(this.localFS.writeJSON).toBeCalledWith(
+          '/tmp/uuid.json',
+          requestBody
+        );
+
+        expect(this.cloudStorage.upload).toBeCalledWith(
+          '/tmp/uuid.json',
+          {
+            destination: '/requests/receiveEmail/uuid.json',
+            resumable: false,
+          }
+        );
+
+        const pubSubMessage = {
+          data: {
+            attachments: JSON.parse(requestBody.attachments),
+          },
+          attributes: {
+            requestId: 'uuid',
+          },
+        };
+        expect(this.pubSub.publish).toBeCalledWith(pubSubMessage, { raw: true });
+      });
   });
 
   it('returns 500 on localFS errors', function() {
-    this.localFSOptions.err = new Error();
+    this.localFS.writeJSON.rejects();
     return this.makeRequest().expect(500);
   });
 
   it('returns 500 on cloud storage failures', function() {
-    this.cloudStorageOptions.err = new Error();
+    this.localFS.writeJSON.resolves();
+    this.cloudStorage.upload.rejects();
     return this.makeRequest().expect(500);
   });
 
   it('returns 500 on publish failures', function() {
-    this.pubSubOptions.err = new Error();
+    this.localFS.writeJSON.resolves();
+    this.cloudStorage.upload.resolves();
+    this.pubSub.publish.rejects()
     return this.makeRequest().expect(500);
   });
 });

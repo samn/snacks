@@ -10,7 +10,7 @@ const makeReceivedAttachments = require('./lib/pubsub/receivedAttachments');
 
 // wrapper for easier testing
 function makePubSub(topic) {
-  const pubSub = {
+  return {
     publish(message, options) {
       return gPubSub.topic(topic).publish(message, options);
     },

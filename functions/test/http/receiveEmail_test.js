@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const expect = require('expect')
 const request = require('supertest');
 const express = require('express');
@@ -8,36 +9,84 @@ const requestBody = require('../fixtures/requests/receiveEmail/body.json');
 function makeFakePubSub(opts) {
   expect(opts).toExist();
   return {
-    topic(topic) {
-      expect(topic).toEqual(opts.topic);
-      return {
-        publish(event, cb) {
-          expect(event).toEqual(opts.event);
-          cb(opts.publishErr);
-        },
-      };
+    publish(message, options) {
+      expect(message).toEqual(opts.message);
+      // TODO check options
+      if (opts.err) {
+        return Promise.reject(opts.err);
+      } else {
+        return Promise.resolve();
+      }
     },
   };
-};
+}
+
+function makeFakeCloudStorage(opts) {
+  expect(opts).toExist();
+  return {
+    upload(path, options) {
+      expect(path).toEqual(opts.path);
+      expect(options).toEqual({
+        destination: '/requests/receiveEmail/uuid.json',
+        resumable: false,
+      });
+      if (opts.err) {
+        return Promise.reject(opts.err);
+      } else {
+        return Promise.resolve();
+      }
+    },
+  };
+}
+
+function makeFakeLocalFS(opts) {
+  expect(opts).toExist();
+  return {
+    writeJSON(path, data) {
+      expect(data).toEqual(opts.data);
+      expect(path).toEqual(opts.path);
+      if (opts.err) {
+        return Promise.reject(opts.err);
+      } else {
+        return Promise.resolve();
+      }
+    },
+  };
+}
 
 describe('receiveEmail', function() {
   beforeEach(function() {
-    this.attachments = JSON.parse(requestBody.attachments);
+    const attachments = JSON.parse(requestBody.attachments);
     this.pubSubOptions = {
-      topic: 'topic',
-      event: {
-        attachments: this.attachments,
+      message: {
+        attachments,
       },
-      publishErr: undefined,
+      err: undefined,
     };
-    this.pubSub = makeFakePubSub(this.pubSubOptions);
+    const pubSub = makeFakePubSub(this.pubSubOptions);
 
-    this.app = express()
+    this.cloudStorageOptions = {
+      path: '/tmp/uuid.json',
+      err: undefined,
+    };
+    const cloudStorage = makeFakeCloudStorage(this.cloudStorageOptions);
+
+    this.localFSOptions = {
+      path: '/tmp/uuid.json',
+      data: requestBody,
+      err: undefined,
+    };
+    const localFS = makeFakeLocalFS(this.localFSOptions);
+
+    const uuid = _.constant('uuid');
+
+    const receieveEmail = makeReceiveEmail(pubSub, cloudStorage, localFS, uuid);
+    const app = express()
       .use(bodyParser.json())
-      .post('/', makeReceiveEmail(this.pubSub, 'topic'));
+      .post('/', receieveEmail);
 
-    this.makeRequest = () => {
-      return request(this.app)
+    this.makeRequest = function() {
+      return request(app)
         .post('/')
         .set('Content-Type', 'application/json')
         .send(requestBody);
@@ -45,12 +94,21 @@ describe('receiveEmail', function() {
   });
 
   it('returns 200 on success', function() {
-      this.makeRequest().expect(200);
+    return this.makeRequest().expect(200);
+  });
+
+  it('returns 500 on localFS errors', function() {
+    this.localFSOptions.err = new Error();
+    return this.makeRequest().expect(500);
+  });
+
+  it('returns 500 on cloud storage failures', function() {
+    this.cloudStorageOptions.err = new Error();
+    return this.makeRequest().expect(500);
   });
 
   it('returns 500 on publish failures', function() {
-    this.pubSubOptions.publishErr = new Error();
-    return request(this.app)
-      this.makeRequest().expect(500);
+    this.pubSubOptions.err = new Error();
+    return this.makeRequest().expect(500);
   });
 });

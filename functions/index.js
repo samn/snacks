@@ -34,7 +34,7 @@ const localFS = {
 }
 
 const receiveEmailPubSub = makePubSub(topics.receivedAttachments);
-const receiveEmailCloudStorage = makeCloudStorage(firebase.config().incomingmessages.bucket);
+const receiveEmailCloudStorage = makeCloudStorage(functions.config().incomingmessages.bucket);
 const receiveEmail = makeReceiveEmail(receiveEmailPubSub, receiveEmailCloudStorage, localFS, uuid);
 exports.receiveEmail = functions.https.onRequest(receiveEmail);
 

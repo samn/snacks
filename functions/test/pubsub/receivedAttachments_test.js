@@ -22,22 +22,22 @@ describe('receivedAttachments', function() {
 
   it('runs successfully', function() {
     const event = makeEvent(attachments);
-    this.receivedAttachments(event);
+    return this.receivedAttachments(event);
   });
 
   it('exits when missing attachments data', function() {
     const event = makeEvent();
-    this.receivedAttachments(event);
+    return this.receivedAttachments(event);
   });
 
   it('skips attachments that are too large', function() {
     const event = makeEvent(_.extend({}, attachments, { size: 10000 }));
-    this.receivedAttachments(event);
+    return this.receivedAttachments(event);
   });
 
   it('skips attachments with non-image content types', function() {
     const event = makeEvent(_.extend({}, attachments, { 'content-type': 'application/pdf' }));
-    this.receivedAttachments(event);
+    return this.receivedAttachments(event);
   });
 });
 

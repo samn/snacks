@@ -5,58 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const makeReceiveEmail = require('../../lib/http/receiveEmail');
 const requestBody = require('../fixtures/requests/receiveEmail/body.json');
-
-function makeFakePubSub(opts) {
-  expect(opts).toExist();
-  return {
-    publish(message, options) {
-      expect(message).toEqual(opts.message);
-      expect(options).toEqual({
-        raw: true,
-      });
-
-      // TODO check options
-      if (opts.err) {
-        return Promise.reject(opts.err);
-      } else {
-        return Promise.resolve();
-      }
-    },
-  };
-}
-
-function makeFakeCloudStorage(opts) {
-  expect(opts).toExist();
-  return {
-    upload(path, options) {
-      expect(path).toEqual(opts.path);
-      expect(options).toEqual({
-        destination: '/requests/receiveEmail/uuid.json',
-        resumable: false,
-      });
-      if (opts.err) {
-        return Promise.reject(opts.err);
-      } else {
-        return Promise.resolve();
-      }
-    },
-  };
-}
-
-function makeFakeLocalFS(opts) {
-  expect(opts).toExist();
-  return {
-    writeJSON(path, data) {
-      expect(data).toEqual(opts.data);
-      expect(path).toEqual(opts.path);
-      if (opts.err) {
-        return Promise.reject(opts.err);
-      } else {
-        return Promise.resolve();
-      }
-    },
-  };
-}
+const fakes = require('../fakes');
 
 describe('receiveEmail', function() {
   beforeEach(function() {
@@ -72,20 +21,24 @@ describe('receiveEmail', function() {
       },
       err: undefined,
     };
-    const pubSub = makeFakePubSub(this.pubSubOptions);
+    const pubSub = fakes.pubSub(this.pubSubOptions);
 
     this.cloudStorageOptions = {
       path: '/tmp/uuid.json',
+      options: {
+        destination: '/requests/receiveEmail/uuid.json',
+        resumable: false,
+      },
       err: undefined,
     };
-    const cloudStorage = makeFakeCloudStorage(this.cloudStorageOptions);
+    const cloudStorage = fakes.cloudStorage(this.cloudStorageOptions);
 
     this.localFSOptions = {
       path: '/tmp/uuid.json',
       data: requestBody,
       err: undefined,
     };
-    const localFS = makeFakeLocalFS(this.localFSOptions);
+    const localFS = fakes.localFS(this.localFSOptions);
 
     const uuid = _.constant('uuid');
 

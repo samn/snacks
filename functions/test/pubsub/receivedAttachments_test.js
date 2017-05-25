@@ -7,6 +7,9 @@ const attachments = JSON.parse(requestBody.attachments);
 function makeEvent(json) {
   return {
     data: {
+      attributes: {
+        requestId: 'uuid',
+      },
       json,
     },
   };

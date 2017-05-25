@@ -11,6 +11,10 @@ function makeFakePubSub(opts) {
   return {
     publish(message, options) {
       expect(message).toEqual(opts.message);
+      expect(options).toEqual({
+        raw: true,
+      });
+
       // TODO check options
       if (opts.err) {
         return Promise.reject(opts.err);
@@ -59,7 +63,12 @@ describe('receiveEmail', function() {
     const attachments = JSON.parse(requestBody.attachments);
     this.pubSubOptions = {
       message: {
-        attachments,
+        data: {
+          attachments,
+        },
+        attributes: {
+          requestId: 'uuid',
+        },
       },
       err: undefined,
     };

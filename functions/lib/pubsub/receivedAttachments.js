@@ -1,3 +1,5 @@
+const Logger = require('../Logger');
+
 /* Attachments payload:
 [
   {
@@ -10,7 +12,10 @@
 */
 module.exports = function makeReceivedAttachments(maxFileSizeBytes) {
   return function receivedAttachments(event) {
-    console.log('Got event data', event.data.json);
+    const requestId = event.data.attributes.requestId;
+    const log = new Logger(requestId);
+
+    log.info('Got event data', event.data.json);
     const eventData = event.data.json;
     if (!eventData || !eventData.attachments) {
       return;
@@ -20,13 +25,13 @@ module.exports = function makeReceivedAttachments(maxFileSizeBytes) {
     attachments.forEach((attachment) => {
       // attachment.size is in bytes
       if (attachment.size > maxFileSizeBytes) {
-        console.log(`Attachment with name ${attachment.name} with ${attachment.size} is too long, skipping.`);
+        log.error(`Attachment with name ${attachment.name} with ${attachment.size} is too long, skipping.`);
         return;
       }
 
       // TODO stricter allow list of image formats
       if (!attachment['content-type'].startsWith('image')) {
-        console.log(`Attachment with name ${attachment.name} has invalid content-type ( ${attachment['content-type']}, skipping.`);
+        log.error(`Attachment with name ${attachment.name} has invalid content-type ( ${attachment['content-type']}, skipping.`);
         return;
       }
     });

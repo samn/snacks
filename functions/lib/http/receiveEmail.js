@@ -1,11 +1,19 @@
+const Logger = require('../Logger');
+
 module.exports = function makeReceiveEmail(pubSub, cloudStorage, localFS, uuid) {
   return function receiveEmail(request, response) {
     const requestId = uuid();
+    const log = new Logger(requestId);
 
     // attachments is a JSON encoded string, see test/fixtures/requests/receiveEmail/body.json
     const attachments = JSON.parse(request.body.attachments);
     const pubSubMessage = {
-      attachments,
+      data: {
+        attachments,
+      },
+      attributes: {
+        requestId,
+      },
     };
 
     const filename = `${requestId}.json`;
@@ -14,7 +22,7 @@ module.exports = function makeReceiveEmail(pubSub, cloudStorage, localFS, uuid) 
       .then(uploadToCloudStorage(cloudStorage, tmpPath, filename))
       .then(publishMessage(pubSub, pubSubMessage))
       .then(success(response))
-      .catch(failure(response));
+      .catch(failure(log, response));
   };
 };
 
@@ -30,7 +38,7 @@ function uploadToCloudStorage(cloudStorage, tmpPath, filename) {
 
 function publishMessage(pubSub, message) {
   return function() {
-    return pubSub.publish(message);
+    return pubSub.publish(message, { raw: true });
   }
 }
 
@@ -40,9 +48,9 @@ function success(response) {
   };
 }
 
-function failure(response) {
+function failure(log, response) {
   return function(err) {
-    console.error(err);
+    log.error(err);
     response.status(500).end();
   };
 }

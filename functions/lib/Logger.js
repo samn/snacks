@@ -1,5 +1,5 @@
-function format(requestId, message) {
-  return `[${requestId}] ${message}`;
+function header(requestId) {
+  return `[${requestId}]`;
 }
 
 class Logger {
@@ -7,15 +7,15 @@ class Logger {
     this.requestId = requestId;
   }
 
-  info(message) {
+  info(...message) {
     if (Logger.LOGGING_ENABLED) {
-      console.info(format(this.requestId, message));
+      console.info(header(this.requestId), ...message);
     }
   }
 
-  error(message) {
+  error(...message) {
     if (Logger.LOGGING_ENABLED) {
-      console.error(format(this.requestId, message));
+      console.error(header(this.requestId), ...message);
     }
   }
 }

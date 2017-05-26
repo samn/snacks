@@ -1,5 +1,5 @@
 const expect = require('expect')
-const Mailgun = require('../../lib/clients/Mailgun');
+const Mailgun = require('../../lib/clients/mailgun');
 const nock = require('nock');
 
 describe('Mailgun', function() {

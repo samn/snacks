@@ -1,5 +1,6 @@
 const expect = require('expect')
 const sinon = require('sinon');
+const Mailgun = require('../lib/clients/mailgun');
 
 exports.pubSub = function makeFakePubSub() {
   return sinon.stub({
@@ -17,6 +18,10 @@ exports.cloudStorage = function makeFakeCloudStorage() {
 exports.localFS = function makeFakeLocalFS() {
   return sinon.stub({
     writeJSON(path, data) { },
+    writeFile(path, data) { },
   });
 }
 
+exports.mailgun = function makeFakeMailgin() {
+  return sinon.stub(new Mailgun());
+}

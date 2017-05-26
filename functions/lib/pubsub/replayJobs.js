@@ -31,6 +31,7 @@ module.exports = function makeReplayJobs(cloudStorage, pubSub) {
         })
         .catch((err) => {
           log.error(err);
+          throw err;
         });
     }));
   };

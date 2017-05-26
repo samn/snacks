@@ -24,12 +24,15 @@ describe('receivedAttachments', function() {
     this.mailgun = fakes.mailgun();
     this.localFS = fakes.localFS();
     this.cloudStorage = fakes.cloudStorage();
-    this.receivedAttachments = makeReceivedAttachments(2000, this.mailgun, this.localFS, this.cloudStorage);
+    this.datastore = fakes.datastore();
+    this.receivedAttachments = makeReceivedAttachments(2000, this.mailgun, this.localFS, this.cloudStorage, this.datastore);
   });
 
   it('runs successfully', function() {
     this.mailgun.get.resolves('image body')
     this.cloudStorage.upload.resolves();
+    this.datastore.key.returnsArg(0);
+    this.datastore.save.resolves();
 
     const event = makeEvent(attachments);
     return this.receivedAttachments(event)
@@ -44,6 +47,25 @@ describe('receivedAttachments', function() {
             gzip: true,
           }
         );
+        expect(this.datastore.save).toBeCalledWith({
+          key: 'posts',
+          method: 'upsert',
+          data: [
+            {
+              name: 'post_id',
+              value: 'objectId-0',
+            },
+            {
+              name: 'image_path',
+              value: '/images/objectId-0.jpeg',
+              excludeFromIndexes: true,
+            },
+            {
+              name: 'submission_id',
+              value: 'objectId',
+            },
+          ],
+        });
       });
   });
 

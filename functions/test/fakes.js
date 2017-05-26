@@ -25,3 +25,10 @@ exports.localFS = function makeFakeLocalFS() {
 exports.mailgun = function makeFakeMailgin() {
   return sinon.stub(new Mailgun());
 }
+
+exports.datastore = function makeFakeDatastore() {
+  return sinon.stub({
+    key(kind) { },
+    save(entity) { },
+  });
+}

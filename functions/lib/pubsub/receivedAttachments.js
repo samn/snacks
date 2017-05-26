@@ -11,7 +11,7 @@ const Logger = require('../Logger');
   }
 ]
 */
-module.exports = function makeReceivedAttachments(maxFileSizeBytes, mailgun, localFS, cloudStorage) {
+module.exports = function makeReceivedAttachments(maxFileSizeBytes, mailgun, localFS, cloudStorage, datastore) {
   return function receivedAttachments(event) {
     const submissionId = event.data.attributes.submissionId;
     const log = new Logger(submissionId);
@@ -39,27 +39,62 @@ module.exports = function makeReceivedAttachments(maxFileSizeBytes, mailgun, loc
 
       // content type is e.g. image/jpeg
       const extension = attachment['content-type'].split('/')[1];
-      const filename = `${submissionId}-${idx}.${extension}`;
+      const postId = `${submissionId}-${idx}`;
+      const filename = `${postId}.${extension}`;
       const tempFile = `/tmp/${filename}`;
+      const cloudStoragePath = `/images/${filename}`;
       // encoding should be null if binary data is expected
       return mailgun.get(attachment.url, { encoding: null })
-        .then(imageBody => {
-          log.info('Got image body', imageBody);
-          log.info(tempFile)
-          return localFS.writeFile(tempFile, imageBody);
-        })
-        .then(() => {
-          const options = {
-            destination: `/images/${filename}`,
-            resumable: false,
-            public: true,
-            gzip: true,
-          };
-          return cloudStorage.upload(tempFile, options)
-        })
+        .then(saveLocallyTo(tempFile, localFS))
+        .then(uploadToCloudStorage(tempFile, cloudStoragePath, cloudStorage))
+        .then(saveToDatastore(postId, cloudStoragePath, submissionId, datastore))
         .catch((err) => {
           log.error(err);
+          throw err;
         });
     }));
   };
 };
+
+function saveLocallyTo(tempFilePath, localFS) {
+  return function saveLocally(imageData) {
+    return localFS.writeFile(tempFilePath, imageData);
+  };
+}
+
+function uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorage) {
+  return function() {
+    const options = {
+      destination: cloudStoragePath,
+      resumable: false,
+      public: true,
+      gzip: true,
+    };
+    return cloudStorage.upload(tempFilePath, options)
+  };
+}
+
+function saveToDatastore(postId, cloudStoragePath, submissionId, datastore) {
+  return function() {
+    const entity = {
+      key: datastore.key('posts'),
+      method: 'upsert',
+      data: [
+        {
+          name: 'post_id',
+          value: postId,
+        },
+        {
+          name: 'image_path',
+          value: cloudStoragePath,
+          excludeFromIndexes: true,
+        },
+        {
+          name: 'submission_id',
+          value: submissionId,
+        },
+      ],
+    };
+    return datastore.save(entity);
+  };
+}

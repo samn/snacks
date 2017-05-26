@@ -2,8 +2,8 @@ const Logger = require('../Logger');
 
 module.exports = function makeReceiveEmail(pubSub, cloudStorage, localFS, objectId) {
   return function receiveEmail(request, response) {
-    const requestId = objectId.generate();
-    const log = new Logger(requestId);
+    const submissionId = objectId.generate();
+    const log = new Logger(submissionId);
 
     // attachments is a JSON encoded string, see test/fixtures/requests/receiveEmail/body.json
     const attachments = JSON.parse(request.body.attachments);
@@ -12,11 +12,11 @@ module.exports = function makeReceiveEmail(pubSub, cloudStorage, localFS, object
         attachments,
       },
       attributes: {
-        requestId,
+        submissionId,
       },
     };
 
-    const filename = `${requestId}.json`;
+    const filename = `${submissionId}.json`;
     const tmpPath = `/tmp/${filename}`;
     localFS.writeJSON(tmpPath, request.body)
       .then(uploadToCloudStorage(cloudStorage, tmpPath, filename))

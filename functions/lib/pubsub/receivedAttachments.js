@@ -13,8 +13,8 @@ const Logger = require('../Logger');
 */
 module.exports = function makeReceivedAttachments(maxFileSizeBytes, mailgun, localFS, cloudStorage) {
   return function receivedAttachments(event) {
-    const requestId = event.data.attributes.requestId;
-    const log = new Logger(requestId);
+    const submissionId = event.data.attributes.submissionId;
+    const log = new Logger(submissionId);
     const eventData = event.data.json;
 
     log.info('Got event data', eventData);
@@ -39,7 +39,7 @@ module.exports = function makeReceivedAttachments(maxFileSizeBytes, mailgun, loc
 
       // content type is e.g. image/jpeg
       const extension = attachment['content-type'].split('/')[1];
-      const filename = `${requestId}-${idx}.${extension}`;
+      const filename = `${submissionId}-${idx}.${extension}`;
       const tempFile = `/tmp/${filename}`;
       // encoding should be null if binary data is expected
       return mailgun.get(attachment.url, { encoding: null })
@@ -56,9 +56,6 @@ module.exports = function makeReceivedAttachments(maxFileSizeBytes, mailgun, loc
             gzip: true,
           };
           return cloudStorage.upload(tempFile, options)
-            .then((r) => {
-              log.info('Cloud storage upload complete', r);
-            });
         })
         .catch((err) => {
           log.error(err);

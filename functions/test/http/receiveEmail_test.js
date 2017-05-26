@@ -54,7 +54,7 @@ describe('receiveEmail', function() {
             attachments: JSON.parse(requestBody.attachments),
           },
           attributes: {
-            requestId: 'objectId',
+            submissionId: 'objectId',
           },
         };
         expect(this.pubSub.publish).toBeCalledWith(pubSubMessage, { raw: true });

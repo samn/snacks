@@ -4,14 +4,14 @@ const makeReplayJobs = require('../../lib/pubsub/replayJobs');
 const fakes = require('../fakes');
 const requestBody = require('../fixtures/requests/receiveEmail/body.json');
 
-function makeEvent(requestIdsToReplay) {
+function makeEvent(submissionIdsToReplay) {
   return {
     data: {
       attributes: {
-        requestId: 'objectId',
+        submissionId: 'objectId',
       },
       json: {
-        requestIdsToReplay
+        submissionIdsToReplay
       },
     },
   };
@@ -37,7 +37,7 @@ describe('replayJobs', function() {
             attachments: JSON.parse(requestBody.attachments),
           },
           attributes: {
-            requestId: 'objectId',
+            submissionId: 'objectId',
           },
         };
         expect(this.pubSub.publish).toBeCalledWith(pubSubMessage, { raw: true });

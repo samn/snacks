@@ -10,7 +10,7 @@ function makeEvent(attachments) {
   return {
     data: {
       attributes: {
-        requestId: 'objectId',
+        submissionId: 'objectId',
       },
       json: {
         attachments,

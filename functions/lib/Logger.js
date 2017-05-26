@@ -1,21 +1,21 @@
-function header(requestId) {
-  return `[${requestId}]`;
+function header(submissionId) {
+  return `[${submissionId}]`;
 }
 
 class Logger {
-  constructor(requestId) {
-    this.requestId = requestId;
+  constructor(submissionId) {
+    this.submissionId = submissionId;
   }
 
   info(...message) {
     if (Logger.LOGGING_ENABLED) {
-      console.info(header(this.requestId), ...message);
+      console.info(header(this.submissionId), ...message);
     }
   }
 
   error(...message) {
     if (Logger.LOGGING_ENABLED) {
-      console.error(header(this.requestId), ...message);
+      console.error(header(this.submissionId), ...message);
     }
   }
 }

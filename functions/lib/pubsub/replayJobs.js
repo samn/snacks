@@ -3,18 +3,18 @@ const Logger = require('../Logger');
 
 // Re-enqueue messages by request id.
 // Event: {
-//  requestIdsToReplay: [
+//  submissionIdsToReplay: [
 //    "",
 //  ]
 // }
 module.exports = function makeReplayJobs(cloudStorage, pubSub) {
   return function replayJobs(event) {
-    const requestIdsToReplay = event.data.json.requestIdsToReplay;
-    return Promise.all(_.map(requestIdsToReplay, (requestId) => {
-      const log = new Logger(requestId);
+    const submissionIdsToReplay = event.data.json.submissionIdsToReplay;
+    return Promise.all(_.map(submissionIdsToReplay, (submissionId) => {
+      const log = new Logger(submissionId);
       // TODO consolidate how to generate this path
       log.info('Fetching message');
-      return cloudStorage.download(`/requests/receiveEmail/${requestId}.json`)
+      return cloudStorage.download(`/requests/receiveEmail/${submissionId}.json`)
         .then(data => {
           const requestBody = JSON.parse(data[0]);
           const attachments = JSON.parse(requestBody.attachments);
@@ -23,7 +23,7 @@ module.exports = function makeReplayJobs(cloudStorage, pubSub) {
               attachments,
             },
             attributes: {
-              requestId,
+              submissionId,
             },
           };
           log.info('Enqueuing attachments');

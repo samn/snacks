@@ -1,4 +1,5 @@
 const Logger = require('../Logger');
+const render = require('./render');
 
 module.exports = function makeReceiveEmail(pubSub, cloudStorage, localFS, objectId) {
   return function receiveEmail(request, response) {
@@ -21,8 +22,8 @@ module.exports = function makeReceiveEmail(pubSub, cloudStorage, localFS, object
     localFS.writeJSON(tmpPath, request.body)
       .then(uploadToCloudStorage(cloudStorage, tmpPath, filename))
       .then(publishMessage(pubSub, pubSubMessage))
-      .then(success(response))
-      .catch(failure(log, response));
+      .then(render.success(response))
+      .catch(render.failure(log, response));
   };
 };
 
@@ -40,17 +41,4 @@ function publishMessage(pubSub, message) {
   return function() {
     return pubSub.publish(message, { raw: true });
   }
-}
-
-function success(response) {
-  return function() {
-    response.status(200).end();
-  };
-}
-
-function failure(log, response) {
-  return function(err) {
-    log.error(err);
-    response.status(500).end();
-  };
 }

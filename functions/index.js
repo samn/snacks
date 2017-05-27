@@ -7,8 +7,10 @@ const ObjectID = require('bson-objectid');
 
 const topics = require('./lib/pubsub/topics');
 const makeReceiveEmail = require('./lib/http/receiveEmail');
+const makeRenderIndex = require('./lib/http/renderIndex');
 const makeReceivedAttachments = require('./lib/pubsub/receivedAttachments');
 const makeReplayJobs = require('./lib/pubsub/replayJobs');
+const PostsEntity = require('./lib/entities/posts');
 const Mailgun = require('./lib/clients/mailgun');
 
 // wrapper interface for easier testing
@@ -48,7 +50,7 @@ const datastore = {
   },
   save(entity) {
     return cloudDatastore.save(entity);
-  }
+  },
 }
 
 const receivedAttachmentsPubSub = makePubSub(topics.receivedAttachments);
@@ -66,3 +68,7 @@ exports.receivedAttachmentsPubSub = functions.pubsub.topic(topics.receivedAttach
 
 const replayJobs = makeReplayJobs(incomingMessagesCloudStorage, receivedAttachmentsPubSub);
 exports.replayJobsPubSub = functions.pubsub.topic(topics.replayJobs ).onPublish(replayJobs);
+
+const postsEntity = new PostsEntity(cloudDatastore);
+const renderIndex = makeRenderIndex(ObjectID, functions.config().content.baseurl, postsEntity);
+exports.renderIndex = functions.https.onRequest(renderIndex);

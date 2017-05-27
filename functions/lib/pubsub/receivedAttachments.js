@@ -22,9 +22,7 @@ module.exports = function makeReceivedAttachments(maxFileSizeBytes, mailgun, loc
       return;
     }
 
-    // reverse attachments so they're posted in reverse chronological order
-    const attachments = _.reverse(eventData.attachments);
-    return Promise.all(_.map(attachments, (attachment, idx) => {
+    return Promise.all(_.map(eventData.attachments, (attachment, idx) => {
       // attachment.size is in bytes
       if (attachment.size > maxFileSizeBytes) {
         log.error(`Attachment with name ${attachment.name} with ${attachment.size} is too long, skipping.`);

@@ -31,6 +31,10 @@ describe('receivedAttachments', function() {
   it('runs successfully', function() {
     this.mailgun.get.resolves('image body')
     this.datastore.key.returnsArg(0);
+    this.imageManipulation.getSize.resolves({
+      height: 10,
+      width: 100,
+    });
 
     const event = makeEvent(attachments);
     return this.receivedAttachments(event)
@@ -46,8 +50,9 @@ describe('receivedAttachments', function() {
             gzip: true,
           }
         );
+        expect(this.imageManipulation.getSize).toBeCalledWith('/tmp/objectId-0.jpeg')
         expect(this.datastore.save).toBeCalledWith({
-          key: 'posts',
+          key: ['posts', 'objectId-0'],
           method: 'upsert',
           data: [
             {
@@ -57,6 +62,16 @@ describe('receivedAttachments', function() {
             {
               name: 'image_path',
               value: '/images/objectId-0.jpeg',
+              excludeFromIndexes: true,
+            },
+            {
+              name: 'image_height',
+              value: 10,
+              excludeFromIndexes: true,
+            },
+            {
+              name: 'image_width',
+              value: 100,
               excludeFromIndexes: true,
             },
             {

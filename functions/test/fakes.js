@@ -36,5 +36,6 @@ exports.datastore = function makeFakeDatastore() {
 exports.imageManipulation = function makeFakeImageManipulation() {
   return sinon.stub({
     fixup() { },
+    getSize() { },
   });
 }

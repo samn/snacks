@@ -18,8 +18,8 @@ module.exports = function makeReceivedAttachments(mailgun, localFS, cloudStorage
     const log = new Logger(submissionId);
     const eventData = event.data.json;
 
-    log.info('Got event data', eventData);
     if (!eventData || !eventData.attachments) {
+      log.info('No attachments in event data, skipping message.', eventData);
       return;
     }
 
@@ -47,6 +47,7 @@ module.exports = function makeReceivedAttachments(mailgun, localFS, cloudStorage
         .then(saveLocallyTo(tempFilePath, localFS))
         .then(fixupImage(tempFilePath, imageManipulation))
         .then(uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorage))
+        .then(lookupSize(tempFilePath, imageManipulation))
         .then(saveToDatastore(postId, cloudStoragePath, submissionId, datastore))
         .catch((err) => {
           log.error(err);
@@ -74,8 +75,15 @@ function uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorage) {
   };
 }
 
-function saveToDatastore(postId, cloudStoragePath, submissionId, datastore) {
+function lookupSize(tempFilePath, imageManipulation) {
   return function() {
+    return imageManipulation.getSize(tempFilePath);
+  }
+}
+
+function saveToDatastore(postId, cloudStoragePath, submissionId, datastore) {
+  // the first arg should be the result of imageManipulation.getSize
+  return function({height, width}) {
     const entity = {
       // use the postId as the identifier to allow for idempotent updates to a post
       key: datastore.key(['posts', postId]),
@@ -88,6 +96,16 @@ function saveToDatastore(postId, cloudStoragePath, submissionId, datastore) {
         {
           name: 'image_path',
           value: cloudStoragePath,
+          excludeFromIndexes: true,
+        },
+        {
+          name: 'image_height',
+          value: height,
+          excludeFromIndexes: true,
+        },
+        {
+          name: 'image_width',
+          value: width,
           excludeFromIndexes: true,
         },
         {

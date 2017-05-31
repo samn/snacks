@@ -71,7 +71,18 @@ const imageManipulation = {
           }
         });
     });
-  }
+  },
+  getSize(path) {
+    return new Promise((resolve, reject) => {
+      gm(path).size((err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  },
 }
 
 const receivedAttachmentsPubSub = makePubSub(topics.receivedAttachments);

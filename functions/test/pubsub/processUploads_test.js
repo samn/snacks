@@ -1,9 +1,11 @@
 const _ = require('lodash');
 const expect = require('expect')
+const sinon = require('sinon');
 const { makeReceivedAttachments, makeReprocessImages } = require('../../lib/pubsub/processUploads');
 const fakes = require('../fakes');
 const requestBody = require('../fixtures/requests/receiveEmail/body.json');
 const attachments = JSON.parse(requestBody.attachments);
+const PostsEntity = require('../../lib/entities/posts');
 
 function makeEvent(attachments) {
   return {
@@ -23,18 +25,19 @@ describe('receivedAttachments', function() {
     this.mailgun = fakes.mailgun();
     this.localFS = fakes.localFS();
     this.cloudStorage = fakes.cloudStorage();
-    this.datastore = fakes.datastore();
+    this.postsEntity = sinon.stub(new PostsEntity());
     this.imageManipulation = fakes.imageManipulation();
-    this.receivedAttachments = makeReceivedAttachments(this.mailgun, this.localFS, this.cloudStorage, this.datastore, this.imageManipulation);
+    this.receivedAttachments = makeReceivedAttachments(this.mailgun, this.localFS, this.cloudStorage, this.postsEntity, this.imageManipulation);
   });
 
   it('runs successfully', function() {
     this.mailgun.get.resolves('image data')
-    this.datastore.key.returnsArg(0);
     this.imageManipulation.getSize.resolves({
       height: 10,
       width: 100,
     });
+    this.cloudStorage.upload.resolves();
+    this.postsEntity.save.resolves();
 
     const event = makeEvent(attachments);
     return this.receivedAttachments(event)
@@ -47,39 +50,11 @@ describe('receivedAttachments', function() {
             destination: '/images/objectId-0.jpeg',
             resumable: false,
             public: true,
-            gzip: true,
+            gzip: false,
           }
         );
         expect(this.imageManipulation.getSize).toBeCalledWith('/tmp/objectId-0.jpeg')
-        expect(this.datastore.save).toBeCalledWith({
-          key: ['posts', 'objectId-0'],
-          method: 'upsert',
-          data: [
-            {
-              name: 'post_id',
-              value: 'objectId-0',
-            },
-            {
-              name: 'image_path',
-              value: '/images/objectId-0.jpeg',
-              excludeFromIndexes: true,
-            },
-            {
-              name: 'image_height',
-              value: 10,
-              excludeFromIndexes: true,
-            },
-            {
-              name: 'image_width',
-              value: 100,
-              excludeFromIndexes: true,
-            },
-            {
-              name: 'submission_id',
-              value: 'objectId',
-            },
-          ],
-        });
+        expect(this.postsEntity.save).toBeCalledWith('objectId-0', '/images/objectId-0.jpeg', 'objectId');
       });
   });
 
@@ -105,14 +80,13 @@ describe('reprocessImages', function() {
   beforeEach(function() {
     this.localFS = fakes.localFS();
     this.cloudStorage = fakes.cloudStorage();
-    this.datastore = fakes.datastore();
+    this.postsEntity = sinon.stub(new PostsEntity());
     this.imageManipulation = fakes.imageManipulation();
-    this.reprocessImages = makeReprocessImages(this.localFS, this.cloudStorage, this.datastore, this.imageManipulation);
+    this.reprocessImages = makeReprocessImages(this.localFS, this.cloudStorage, this.postsEntity, this.imageManipulation);
   });
 
   it('runs successfully', function() {
-    this.cloudStorage.download.resolves('image data');
-    this.datastore.key.returnsArg(0);
+    this.cloudStorage.download.resolves(['image data']);
     this.imageManipulation.getSize.resolves({
       height: 10,
       width: 100,
@@ -135,39 +109,11 @@ describe('reprocessImages', function() {
             destination: '/images/objectId-0.jpeg',
             resumable: false,
             public: true,
-            gzip: true,
+            gzip: false,
           }
         );
         expect(this.imageManipulation.getSize).toBeCalledWith('/tmp/objectId-0.jpeg')
-        expect(this.datastore.save).toBeCalledWith({
-          key: ['posts', 'objectId-0'],
-          method: 'upsert',
-          data: [
-            {
-              name: 'post_id',
-              value: 'objectId-0',
-            },
-            {
-              name: 'image_path',
-              value: '/images/objectId-0.jpeg',
-              excludeFromIndexes: true,
-            },
-            {
-              name: 'image_height',
-              value: 10,
-              excludeFromIndexes: true,
-            },
-            {
-              name: 'image_width',
-              value: 100,
-              excludeFromIndexes: true,
-            },
-            {
-              name: 'submission_id',
-              value: 'objectId',
-            },
-          ],
-        });
+        expect(this.postsEntity.save).toBeCalledWith('objectId-0', '/images/objectId-0.jpeg', 'objectId');
       });
   });
 });

@@ -15,7 +15,7 @@ const maxFileSizeBytes = 10 * 1000 * 1000; // 10 mb
   }
 ]
 */
-exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, localFS, cloudStorage, datastore, imageManipulation) {
+exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, localFS, cloudStorage, postsEntity, imageManipulation) {
   return function receivedAttachments(event) {
     const submissionId = event.data.attributes.submissionId;
     const log = new Logger(submissionId);
@@ -51,7 +51,7 @@ exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, loca
         .then(fixupImage(tempFilePath, imageManipulation))
         .then(uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorage))
         .then(lookupSize(tempFilePath, imageManipulation))
-        .then(saveToDatastore(postId, cloudStoragePath, submissionId, datastore))
+        .then(saveToDatastore(postId, cloudStoragePath, submissionId, postsEntity))
         .catch((err) => {
           log.error(err);
           throw err;
@@ -66,7 +66,7 @@ exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, loca
 //    "",
 //  ]
 // }
-exports.makeReprocessImages = function makeReprocessImages(localFS, cloudStorage, datastore, imageManipulation) {
+exports.makeReprocessImages = function makeReprocessImages(localFS, cloudStorage, postsEntity, imageManipulation) {
   return function reprocessImages(event) {
     const pathsToReprocess = event.data.json.pathsToReprocess;
     return Promise.all(_.map(pathsToReprocess, (cloudStoragePath) => {
@@ -85,7 +85,7 @@ exports.makeReprocessImages = function makeReprocessImages(localFS, cloudStorage
         .then(fixupImage(tempFilePath, imageManipulation))
         .then(uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorage))
         .then(lookupSize(tempFilePath, imageManipulation))
-        .then(saveToDatastore(postId, cloudStoragePath, submissionId, datastore))
+        .then(saveToDatastore(postId, cloudStoragePath, submissionId, postsEntity))
         .catch((err) => {
           log.error(err);
           throw err;
@@ -118,40 +118,10 @@ function lookupSize(tempFilePath, imageManipulation) {
   }
 }
 
-function saveToDatastore(postId, cloudStoragePath, submissionId, datastore) {
-  // the first arg should be the result of imageManipulation.getSize
-  return function({height, width}) {
-    const entity = {
-      // use the postId as the identifier to allow for idempotent updates to a post
-      key: datastore.key(['posts', postId]),
-      method: 'upsert',
-      data: [
-        {
-          name: 'post_id',
-          value: postId,
-        },
-        {
-          name: 'image_path',
-          value: cloudStoragePath,
-          excludeFromIndexes: true,
-        },
-        {
-          name: 'image_height',
-          value: height,
-          excludeFromIndexes: true,
-        },
-        {
-          name: 'image_width',
-          value: width,
-          excludeFromIndexes: true,
-        },
-        {
-          name: 'submission_id',
-          value: submissionId,
-        },
-      ],
-    };
-    return datastore.save(entity);
+function saveToDatastore(postId, cloudStoragePath, submissionId, postsEntity) {
+  // sizeInfo should be the result of imageManipulation.getSize
+  return function(sizeInfo) {
+    return postsEntity.save(postId, cloudStoragePath, submissionId, sizeInfo);
   };
 }
 

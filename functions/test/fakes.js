@@ -30,6 +30,8 @@ exports.datastore = function makeFakeDatastore() {
   return sinon.stub({
     key(kind) { },
     save(entity) { },
+    createQuery() { },
+    runQuery() { },
   });
 }
 

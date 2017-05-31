@@ -1,4 +1,5 @@
 const functions = require('firebase-functions');
+const next = require('next')
 const gPubSub = require('@google-cloud/pubsub')();
 const gcs = require('@google-cloud/storage')();
 const cloudDatastore = require('@google-cloud/datastore')();
@@ -89,20 +90,22 @@ const receivedAttachmentsPubSub = makePubSub(topics.receivedAttachments);
 const incomingMessagesCloudStorage = makeCloudStorage(functions.config().incomingmessages.bucket);
 
 const contentCloudStorage = makeCloudStorage(functions.config().content.bucket);
+const postsEntity = new PostsEntity(cloudDatastore, functions.config().content.baseurl);
+const mailgun = new Mailgun(functions.config().mailgun.apikey);
+
 
 const receiveEmail = makeReceiveEmail(receivedAttachmentsPubSub, incomingMessagesCloudStorage, localFS, ObjectID);
 exports.receiveEmail = functions.https.onRequest(receiveEmail);
 
-const mailgun = new Mailgun(functions.config().mailgun.apikey);
-const receivedAttachments = makeReceivedAttachments(mailgun, localFS, contentCloudStorage, datastore, imageManipulation);
+const receivedAttachments = makeReceivedAttachments(mailgun, localFS, contentCloudStorage, postsEntity, imageManipulation);
 exports.receivedAttachmentsPubSub = functions.pubsub.topic(topics.receivedAttachments).onPublish(receivedAttachments);
 
-const reprocessImages = makeReprocessImages(localFS, contentCloudStorage, datastore, imageManipulation);
+const reprocessImages = makeReprocessImages(localFS, contentCloudStorage, postsEntity, imageManipulation);
 exports.reprocessImagesPubSub = functions.pubsub.topic(topics.reprocessImages).onPublish(reprocessImages);
 
 const replayJobs = makeReplayJobs(incomingMessagesCloudStorage, receivedAttachmentsPubSub);
 exports.replayJobsPubSub = functions.pubsub.topic(topics.replayJobs ).onPublish(replayJobs);
 
-const postsEntity = new PostsEntity(cloudDatastore);
-const renderIndex = makeRenderIndex(ObjectID, functions.config().content.baseurl, postsEntity);
+const nextApp = next({ dev: false }).getRequestHandler();
+const renderIndex = makeRenderIndex(ObjectID, nextApp, postsEntity);
 exports.renderIndex = functions.https.onRequest(renderIndex);

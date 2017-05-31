@@ -58,3 +58,6 @@ typings/
 .env
 
 .firebaserc
+
+.next
+functions/dist

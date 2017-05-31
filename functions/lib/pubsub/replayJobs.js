@@ -12,8 +12,8 @@ module.exports = function makeReplayJobs(cloudStorage, pubSub) {
     const submissionIdsToReplay = event.data.json.submissionIdsToReplay;
     return Promise.all(_.map(submissionIdsToReplay, (submissionId) => {
       const log = new Logger(submissionId);
-      // TODO consolidate how to generate this path
       log.info('Fetching message');
+      // TODO consolidate how to generate this path
       return cloudStorage.download(`/requests/receiveEmail/${submissionId}.json`)
         .then(data => {
           const requestBody = JSON.parse(data[0]);

@@ -13,6 +13,7 @@
     "firebase-admin": "~4.2.1",
     "firebase-functions": "^0.5.7",
     "fs-extra": "^3.0.1",
+    "gm": "^1.23.0",
     "lodash": "^4.17.4",
     "request": "^2.81.0",
     "request-promise": "^4.2.1"

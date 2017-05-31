@@ -1,6 +1,5 @@
 const _ = require('lodash');
 const expect = require('expect')
-const Mailgun = require('../../lib/clients/mailgun');
 const makeReceivedAttachments = require('../../lib/pubsub/receivedAttachments');
 const fakes = require('../fakes');
 const requestBody = require('../fixtures/requests/receiveEmail/body.json');
@@ -25,19 +24,19 @@ describe('receivedAttachments', function() {
     this.localFS = fakes.localFS();
     this.cloudStorage = fakes.cloudStorage();
     this.datastore = fakes.datastore();
-    this.receivedAttachments = makeReceivedAttachments(2000, this.mailgun, this.localFS, this.cloudStorage, this.datastore);
+    this.imageManipulation = fakes.imageManipulation();
+    this.receivedAttachments = makeReceivedAttachments(this.mailgun, this.localFS, this.cloudStorage, this.datastore, this.imageManipulation);
   });
 
   it('runs successfully', function() {
     this.mailgun.get.resolves('image body')
-    this.cloudStorage.upload.resolves();
     this.datastore.key.returnsArg(0);
-    this.datastore.save.resolves();
 
     const event = makeEvent(attachments);
     return this.receivedAttachments(event)
       .then(() => {
         expect(this.localFS.writeFile).toBeCalledWith('/tmp/objectId-0.jpeg', 'image body');
+        expect(this.imageManipulation.fixup).toBeCalledWith('/tmp/objectId-0.jpeg')
         expect(this.cloudStorage.upload).toBeCalledWith(
           '/tmp/objectId-0.jpeg',
           {
@@ -75,7 +74,7 @@ describe('receivedAttachments', function() {
   });
 
   it('skips attachments that are too large', function() {
-    const data = _.map(attachments, (attachment) => _.extend({}, attachment, { size: 10000 }));
+    const data = _.map(attachments, (attachment) => _.extend({}, attachment, { size: 20000000 }));
     const event = makeEvent(data);
     return this.receivedAttachments(event);
   });

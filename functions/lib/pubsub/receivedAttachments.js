@@ -11,7 +11,8 @@ const Logger = require('../Logger');
   }
 ]
 */
-module.exports = function makeReceivedAttachments(maxFileSizeBytes, mailgun, localFS, cloudStorage, datastore) {
+const maxFileSizeBytes = 10 * 1000 * 1000; // 10 mb
+module.exports = function makeReceivedAttachments(mailgun, localFS, cloudStorage, datastore, imageManipulation) {
   return function receivedAttachments(event) {
     const submissionId = event.data.attributes.submissionId;
     const log = new Logger(submissionId);
@@ -39,12 +40,13 @@ module.exports = function makeReceivedAttachments(maxFileSizeBytes, mailgun, loc
       const extension = attachment['content-type'].split('/')[1];
       const postId = `${submissionId}-${idx}`;
       const filename = `${postId}.${extension}`;
-      const tempFile = `/tmp/${filename}`;
+      const tempFilePath = `/tmp/${filename}`;
       const cloudStoragePath = `/images/${filename}`;
       // encoding should be null if binary data is expected
       return mailgun.get(attachment.url, { encoding: null })
-        .then(saveLocallyTo(tempFile, localFS))
-        .then(uploadToCloudStorage(tempFile, cloudStoragePath, cloudStorage))
+        .then(saveLocallyTo(tempFilePath, localFS))
+        .then(fixupImage(tempFilePath, imageManipulation))
+        .then(uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorage))
         .then(saveToDatastore(postId, cloudStoragePath, submissionId, datastore))
         .catch((err) => {
           log.error(err);
@@ -75,7 +77,8 @@ function uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorage) {
 function saveToDatastore(postId, cloudStoragePath, submissionId, datastore) {
   return function() {
     const entity = {
-      key: datastore.key('posts'),
+      // use the postId as the identifier to allow for idempotent updates to a post
+      key: datastore.key(['posts', postId]),
       method: 'upsert',
       data: [
         {
@@ -95,4 +98,10 @@ function saveToDatastore(postId, cloudStoragePath, submissionId, datastore) {
     };
     return datastore.save(entity);
   };
+}
+
+function fixupImage(path, imageManipulation) {
+  return function() {
+    return imageManipulation.fixup(path);
+  }
 }

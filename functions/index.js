@@ -4,6 +4,7 @@ const gcs = require('@google-cloud/storage')();
 const cloudDatastore = require('@google-cloud/datastore')();
 const fs = require('fs-extra');
 const ObjectID = require('bson-objectid');
+const gm = require('gm').subClass({ imageMagick: true });
 
 const topics = require('./lib/pubsub/topics');
 const makeReceiveEmail = require('./lib/http/receiveEmail');
@@ -44,6 +45,7 @@ const localFS = {
   }
 }
 
+// wrapper interface for easier testing
 const datastore = {
   key(kind) {
     return cloudDatastore.key(kind);
@@ -51,6 +53,25 @@ const datastore = {
   save(entity) {
     return cloudDatastore.save(entity);
   },
+}
+
+// wrapper interface for easier testing
+const imageManipulation = {
+  // auto orient and remove EXIF
+  fixup(path) {
+    return new Promise((resolve, reject) => {
+      gm(path)
+        .autoOrient()
+        .noProfile()
+        .write(path, (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
+          }
+        });
+    });
+  }
 }
 
 const receivedAttachmentsPubSub = makePubSub(topics.receivedAttachments);
@@ -61,9 +82,8 @@ const contentCloudStorage = makeCloudStorage(functions.config().content.bucket);
 const receiveEmail = makeReceiveEmail(receivedAttachmentsPubSub, incomingMessagesCloudStorage, localFS, ObjectID);
 exports.receiveEmail = functions.https.onRequest(receiveEmail);
 
-const maxFileSizeBytes = 10 * 1000 * 1000; // 10 mb
 const mailgun = new Mailgun(functions.config().mailgun.apikey);
-const receivedAttachments = makeReceivedAttachments(maxFileSizeBytes, mailgun, localFS, contentCloudStorage, datastore);
+const receivedAttachments = makeReceivedAttachments(mailgun, localFS, contentCloudStorage, datastore, imageManipulation);
 exports.receivedAttachmentsPubSub = functions.pubsub.topic(topics.receivedAttachments).onPublish(receivedAttachments);
 
 const replayJobs = makeReplayJobs(incomingMessagesCloudStorage, receivedAttachmentsPubSub);

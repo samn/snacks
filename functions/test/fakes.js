@@ -32,3 +32,9 @@ exports.datastore = function makeFakeDatastore() {
     save(entity) { },
   });
 }
+
+exports.imageManipulation = function makeFakeImageManipulation() {
+  return sinon.stub({
+    fixup() { },
+  });
+}

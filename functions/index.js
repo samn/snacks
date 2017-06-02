@@ -10,6 +10,7 @@ const gm = require('gm').subClass({ imageMagick: true });
 const topics = require('./lib/pubsub/topics');
 const makeReceiveEmail = require('./lib/http/receiveEmail');
 const makeRenderIndex = require('./lib/http/renderIndex');
+const makeFetchPosts = require('./lib/http/fetchPosts');
 const { makeReceivedAttachments, makeReprocessImages } = require('./lib/pubsub/processUploads');
 const makeReplayJobs = require('./lib/pubsub/replayJobs');
 const PostsEntity = require('./lib/entities/posts');
@@ -109,3 +110,6 @@ exports.replayJobsPubSub = functions.pubsub.topic(topics.replayJobs ).onPublish(
 const nextApp = next({ dev: false }).getRequestHandler();
 const renderIndex = makeRenderIndex(ObjectID, nextApp, postsEntity);
 exports.renderIndex = functions.https.onRequest(renderIndex);
+
+const fetchPosts = makeFetchPosts(ObjectID, postsEntity);
+exports.fetchPosts = functions.https.onRequest(fetchPosts);

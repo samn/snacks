@@ -8,7 +8,7 @@ const PostsEntity = require('../../lib/entities/posts');
 describe('PostsEntity', function() {
   beforeEach(function() {
     this.datastore = fakes.datastore();
-    this.entity = new PostsEntity(this.datastore, 'http://cdn/');
+    this.entity = new PostsEntity(this.datastore, 'http://cdn');
   });
 
   describe('save', function() {
@@ -50,7 +50,32 @@ describe('PostsEntity', function() {
     });
   });
 
-  describe('findLatest', function() {
-    // TODO
+  describe('_processResults', function() {
+    it('adds image_url', function() {
+      const results = [
+        [
+          {
+            post_id: 'objectId-0',
+            image_path: '/images/objectId-0.jpeg',
+            image_height: 10,
+            image_width: 100,
+            submission_id: 'objectId',
+          },
+        ],
+      ];
+
+      expect(this.entity._processResults(results)).toEqual(
+        [
+          {
+            post_id: 'objectId-0',
+            image_path: '/images/objectId-0.jpeg',
+            image_height: 10,
+            image_width: 100,
+            submission_id: 'objectId',
+            image_url: 'http://cdn/images/objectId-0.jpeg',
+          },
+        ]
+      );
+    });
   });
 });

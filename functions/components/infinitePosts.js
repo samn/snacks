@@ -17,7 +17,7 @@ export default class extends React.Component {
   }
 
   render() {
-    return <AutoSizer onResize={this.onResize.bind(this)} disableHeight>
+    return <AutoSizer onResize={this.onResize} disableHeight>
         {({ width }) => (
           <WindowScroller>
             {({ height, isScrolling, scrollTop }) => (
@@ -26,8 +26,8 @@ export default class extends React.Component {
                 height={height}
                 isScrolling={isScrolling}
                 rowCount={this.props.posts.length}
-                rowHeight={this.rowHeight.bind(this)}
-                rowRenderer={this.renderPost.bind(this)}
+                rowHeight={this.rowHeight}
+                rowRenderer={this.renderPost}
                 scrollTop={scrollTop}
                 width={width}
               />
@@ -39,7 +39,7 @@ export default class extends React.Component {
 
   // Record the current width so image heights can be scaled
   // This will fire with the initial size too.
-  onResize({height, width}) {
+  onResize = ({height, width}) => {
     this.setState({ width }, () => {
       // We need to tell the List to recompute the heights of its rows when the window size changes
       // since the heights are scaled proportionately to the window's width.
@@ -51,13 +51,13 @@ export default class extends React.Component {
   // We know the width we want images to have (100%) but need to calculate a logical height based on that
   // so the list container can know the height of each image to calculate what's currently visible.
   // Scale the actual image height to the desired height based on the current width of the container.
-  rowHeight({index}) {
+  rowHeight = ({index}) => {
     const post = this.props.posts[index];
     const heightToWidth = post.image_height / post.image_width;
     return _.toInteger(this.state.width * heightToWidth);
   }
 
-  renderPost({index, key, style}) {
+  renderPost = ({index, key, style}) => {
     const post = this.props.posts[index];
     // Set an explicit height (scaled proportionately off the window's width) so its dimensions will resize
     // with the appropriate ratio when the window resizes.

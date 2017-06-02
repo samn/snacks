@@ -16,7 +16,7 @@ export default class extends React.Component {
     } else if (req) {
       console.log('Index getInitialProps fetching latest posts');
       // TODO what if there's an error
-      const posts = await req.dependencies.postsEntity.findLatest();
+      const posts = await req.dependencies.postsEntity.findPosts();
       return {
         posts
       };

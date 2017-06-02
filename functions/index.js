@@ -9,7 +9,7 @@ const gm = require('gm').subClass({ imageMagick: true });
 const topics = require('./lib/pubsub/topics');
 const makeReceiveEmail = require('./lib/http/receiveEmail');
 const makeRenderIndex = require('./lib/http/renderIndex');
-const makeReceivedAttachments = require('./lib/pubsub/receivedAttachments');
+const { makeReceivedAttachments, makeReprocessImages } = require('./lib/pubsub/processUploads');
 const makeReplayJobs = require('./lib/pubsub/replayJobs');
 const PostsEntity = require('./lib/entities/posts');
 const Mailgun = require('./lib/clients/mailgun');
@@ -96,6 +96,9 @@ exports.receiveEmail = functions.https.onRequest(receiveEmail);
 const mailgun = new Mailgun(functions.config().mailgun.apikey);
 const receivedAttachments = makeReceivedAttachments(mailgun, localFS, contentCloudStorage, datastore, imageManipulation);
 exports.receivedAttachmentsPubSub = functions.pubsub.topic(topics.receivedAttachments).onPublish(receivedAttachments);
+
+const reprocessImages = makeReprocessImages(localFS, contentCloudStorage, datastore, imageManipulation);
+exports.reprocessImagesPubSub = functions.pubsub.topic(topics.reprocessImages).onPublish(reprocessImages);
 
 const replayJobs = makeReplayJobs(incomingMessagesCloudStorage, receivedAttachmentsPubSub);
 exports.replayJobsPubSub = functions.pubsub.topic(topics.replayJobs ).onPublish(replayJobs);

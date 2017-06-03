@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import React from 'react'
-// import 'react-virtualized/styles.css'
 import { AutoSizer, List, WindowScroller } from 'react-virtualized';
 import PropTypes from 'prop-types';
 
@@ -22,6 +21,7 @@ export default class extends React.Component {
           <WindowScroller>
             {({ height, isScrolling, scrollTop }) => (
               <List
+                autoHeight
                 ref={(c) => this.postList = c}
                 height={height}
                 isScrolling={isScrolling}

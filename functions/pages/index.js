@@ -29,6 +29,11 @@ export default class extends React.Component {
       <Head>
         <title>SNACKS</title>
       </Head>
+      <style global jsx>{`
+        body {
+          margin: 0;
+        }
+    `}</style>
       <div>
         <InifintePosts posts={this.props.posts} />
       </div>

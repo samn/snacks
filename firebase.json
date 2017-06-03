@@ -3,6 +3,10 @@
     "public": "public",
     "rewrites": [
       {
+        "source": "/fetchPosts*",
+        "function": "fetchPosts"
+      },
+      {
         "source": "**",
         "function": "renderIndex"
       }

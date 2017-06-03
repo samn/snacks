@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const rp = require('request-promise');
+const url = require('url');
 
 class Mailgun {
   constructor(apiKey) {
@@ -7,6 +8,10 @@ class Mailgun {
   }
 
   get(uri, opts) {
+    if (!url.parse(uri).host.endsWith('mailgun.net')) {
+      return Promise.reject(new Error('Only requests to mailgun.net are valid'));
+    }
+
     const options = _.merge({
       method: 'GET',
       uri,

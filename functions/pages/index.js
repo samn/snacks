@@ -1,6 +1,7 @@
 import React from 'react'
 import Head from 'next/head'
 import fetch from 'isomorphic-fetch';
+import _JSXStyle from 'styled-jsx/style'
 
 import InifintePosts from '../components/infinitePosts';
 
@@ -28,6 +29,11 @@ export default class extends React.Component {
     return <div>
       <Head>
         <title>SNACKS</title>
+        <style global jsx>{`
+          body {
+            margin: 0;
+          }
+        `}</style>
         <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png"/>
         <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png"/>
         <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png"/>

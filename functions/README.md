@@ -8,12 +8,6 @@ Written with [mocha](https://mochajs.org/) and [expect](https://github.com/mjack
 * `yarn run autotest` to automatically re-run on file changes
 
 ## Development
-1. Start the [datastore emulator](https://cloud.google.com/datastore/docs/tools/datastore-emulator)
-  * `gcloud beta emulators datastore start --project snacksdev`
-1. Load datastore emulator environment
-  * `$(gcloud beta emulators datastore env-init)`
-1. Seed dev data
-  * `yarn run seed`
 1. Start dev server
   * `yarn run dev`
 

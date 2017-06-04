@@ -34,6 +34,7 @@
     "body-parser": "^1.17.2",
     "expect": "^1.20.2",
     "express": "^4.15.3",
+    "google-datastore-emulator": "^1.1.0",
     "mocha": "^3.4.1",
     "nock": "^9.0.13",
     "sinon": "^2.3.1",

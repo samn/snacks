@@ -58,6 +58,7 @@ typings/
 .env
 
 .firebaserc
+.runtimeconfig.json
 
 .next
 functions/dist

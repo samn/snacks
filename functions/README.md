@@ -5,14 +5,14 @@
 Written with [mocha](https://mochajs.org/) and [expect](https://github.com/mjackson/expect).
 
 * `yarn test`
-* `yarn run autotest` to automatically re-run on file changes
+* `yarn autotest` to automatically re-run on file changes
 
 ## Development
 1. Start dev server
-  * `yarn run dev`
+  * `yarn dev`
 
 ## Deployment
-1. `yarn run build`
+1. `ASSET_PREFIX="your-domain" yarn build`
 1. `firebase deploy`
 
 ## GCP Configuration

@@ -1,6 +1,10 @@
 exports.success = function success(response) {
-  return function() {
-    response.status(200).end();
+  return function(data) {
+    if (data) {
+      response.status(200).send(data);
+    } else {
+      response.status(200).end();
+    }
   };
 }
 

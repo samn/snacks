@@ -9,8 +9,9 @@ const gm = require('gm').subClass({ imageMagick: true });
 
 const topics = require('./lib/pubsub/topics');
 const makeReceiveEmail = require('./lib/http/receiveEmail');
-const makeRenderIndex = require('./lib/http/renderIndex');
+const makeRenderApp = require('./lib/http/renderApp');
 const makeFetchPosts = require('./lib/http/fetchPosts');
+const makeMainApp = require('./lib/http/mainApp');
 const { makeReceivedAttachments, makeReprocessImages } = require('./lib/pubsub/processUploads');
 const makeReplayJobs = require('./lib/pubsub/replayJobs');
 const PostsEntity = require('./lib/entities/posts');
@@ -108,8 +109,7 @@ const replayJobs = makeReplayJobs(incomingMessagesCloudStorage, receivedAttachme
 exports.replayJobsPubSub = functions.pubsub.topic(topics.replayJobs ).onPublish(replayJobs);
 
 const nextApp = next({ dev: false }).getRequestHandler();
-const renderIndex = makeRenderIndex(ObjectID, nextApp, postsEntity);
-exports.renderIndex = functions.https.onRequest(renderIndex);
-
+const renderApp = makeRenderApp(ObjectID, nextApp, postsEntity);
 const fetchPosts = makeFetchPosts(ObjectID, postsEntity);
-exports.fetchPosts = functions.https.onRequest(fetchPosts);
+const mainApp = makeMainApp(renderApp, fetchPosts);
+exports.mainApp = functions.https.onRequest(mainApp);

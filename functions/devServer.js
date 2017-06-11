@@ -7,8 +7,9 @@ const DatastoreEmulator = require('google-datastore-emulator');
 const ObjectId = require('bson-objectid');
 
 const PostsEntity = require('./lib/entities/posts');
-const makeRenderIndex = require('./lib/http/renderIndex');
+const makeRenderApp = require('./lib/http/renderApp');
 const makeFetchPosts = require('./lib/http/fetchPosts');
+const makeMainApp = require('./lib/http/mainApp');
 
 const nextApp = next({ dev: true });
 
@@ -28,15 +29,12 @@ emulator.start()
   .then(() => {
     const datastore = Datastore();
     const postsEntity = new PostsEntity(datastore, "https://storage.googleapis.com/snacks-content");
-    const renderIndex = makeRenderIndex(ObjectId, nextApp.getRequestHandler(), postsEntity)
+    const renderApp = makeRenderApp(ObjectId, nextApp.getRequestHandler(), postsEntity)
     const fetchPosts = makeFetchPosts(ObjectId, postsEntity);
-
-    const app = express();
-    app.get('/fetchPosts', fetchPosts);
-    app.get('/*', renderIndex);
+    const mainApp = makeMainApp(renderApp, fetchPosts);
 
     console.log('Starting dev server');
-    createServer(app)
+    createServer(mainApp)
       .listen(3000, (err) => {
         if (err) throw err
         console.log('> Ready on http://localhost:3000')

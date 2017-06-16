@@ -47,6 +47,16 @@ describe('receivedAttachments', function() {
         expect(this.cloudStorage.upload).toBeCalledWith(
           '/tmp/objectId-0.jpeg',
           {
+            destination: '/originals/images/objectId-0.jpeg',
+            resumable: false,
+            public: false,
+            gzip: false,
+          }
+        );
+        expect(this.imageManipulation.compress).toBeCalledWith('/tmp/objectId-0.jpeg')
+        expect(this.cloudStorage.upload).toBeCalledWith(
+          '/tmp/objectId-0.jpeg',
+          {
             destination: '/images/objectId-0.jpeg',
             resumable: false,
             public: true,
@@ -102,7 +112,7 @@ describe('reprocessImages', function() {
     return this.reprocessImages(event)
       .then(() => {
         expect(this.localFS.writeFile).toBeCalledWith('/tmp/objectId-0.jpeg', 'image data');
-        expect(this.imageManipulation.fixup).toBeCalledWith('/tmp/objectId-0.jpeg')
+        expect(this.imageManipulation.compress).toBeCalledWith('/tmp/objectId-0.jpeg', 960)
         expect(this.cloudStorage.upload).toBeCalledWith(
           '/tmp/objectId-0.jpeg',
           {

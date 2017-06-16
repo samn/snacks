@@ -86,6 +86,40 @@ const imageManipulation = {
       });
     });
   },
+  compress(path, maxWidth) {
+    if (path.endsWith('.gif')) {
+      return Promise.resolve();
+    }
+
+    return this.getSize(path)
+      .then((sizeInfo) => {
+        return new Promise((resolve, reject) => {
+          const width = sizeInfo.width > maxWidth ? maxWidth : sizeInfo.width;
+          gm(path)
+            .resize(width)
+            .quality(85)
+            .unsharp(0.25, 0.25, 8, 0.065)
+            .filter('Triangle')
+            .define('jpeg:fancy-upsampling=off')
+            .define('filter:support=2')
+            .define('png:compression-filter=5')
+            .define('png:compression-level=9')
+            .define('png:compression-strategy=1')
+            .define('png:exclude-chunk=all')
+            .interlace('none')
+            .colorspace('sRGB')
+            .alpha('remove')
+            .strip()
+            .write(path, (err) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve();
+              }
+            });
+        });
+      });
+  },
 }
 
 const receivedAttachmentsPubSub = makePubSub(topics.receivedAttachments);

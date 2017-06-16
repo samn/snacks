@@ -44,12 +44,15 @@ exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, loca
       const postId = `${submissionId}-${idx}`;
       const filename = `${postId}.${extension}`;
       const tempFilePath = `/tmp/${filename}`;
+      const originalCloudStoragePath = `/originals/images/${filename}`;
       const cloudStoragePath = `/images/${filename}`;
       // encoding should be null if binary data is expected
       return mailgun.get(attachment.url, { encoding: null })
         .then(saveLocallyTo(tempFilePath, localFS))
         .then(fixupImage(tempFilePath, imageManipulation))
-        .then(uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorage))
+        .then(uploadToCloudStorage(tempFilePath, originalCloudStoragePath, cloudStorageVisibility.private, cloudStorage))
+        .then(compressImage(tempFilePath, imageManipulation))
+        .then(uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorageVisibility.public, cloudStorage))
         .then(lookupSize(tempFilePath, imageManipulation))
         .then(saveToDatastore(postId, cloudStoragePath, submissionId, postsEntity))
         .catch((err) => {
@@ -82,8 +85,8 @@ exports.makeReprocessImages = function makeReprocessImages(localFS, cloudStorage
       return cloudStorage.download(cloudStoragePath)
         .then(data => data[0])
         .then(saveLocallyTo(tempFilePath, localFS))
-        .then(fixupImage(tempFilePath, imageManipulation))
-        .then(uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorage))
+        .then(compressImage(tempFilePath, imageManipulation))
+        .then(uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorageVisibility.public, cloudStorage))
         .then(lookupSize(tempFilePath, imageManipulation))
         .then(saveToDatastore(postId, cloudStoragePath, submissionId, postsEntity))
         .catch((err) => {
@@ -100,12 +103,16 @@ function saveLocallyTo(tempFilePath, localFS) {
   };
 }
 
-function uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorage) {
+const cloudStorageVisibility = {
+  public: 'public',
+  private: 'private',
+};
+function uploadToCloudStorage(tempFilePath, cloudStoragePath, visibility, cloudStorage) {
   return function() {
     const options = {
       destination: cloudStoragePath,
       resumable: false,
-      public: true,
+      public: visibility === cloudStorageVisibility.public,
       gzip: false,
     };
     return cloudStorage.upload(tempFilePath, options)
@@ -128,5 +135,11 @@ function saveToDatastore(postId, cloudStoragePath, submissionId, postsEntity) {
 function fixupImage(path, imageManipulation) {
   return function() {
     return imageManipulation.fixup(path);
+  }
+}
+
+function compressImage(path, imageManipulation) {
+  return function() {
+    return imageManipulation.compress(path, 960);
   }
 }

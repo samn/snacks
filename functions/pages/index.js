@@ -29,6 +29,7 @@ export default class extends React.Component {
     return <div>
       <Head>
         <title>SNACKS</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <style global jsx>{`
           body {
             margin: 0;

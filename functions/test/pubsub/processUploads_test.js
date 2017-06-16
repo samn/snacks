@@ -105,12 +105,13 @@ describe('reprocessImages', function() {
     const event = {
       data: {
         json: {
-          pathsToReprocess: ["/images/objectId-0.jpeg"],
+          pathsToReprocess: ["/originals/images/objectId-0.jpeg"],
         }
       }
     };
     return this.reprocessImages(event)
       .then(() => {
+        expect(this.cloudStorage.download).toBeCalledWith('/originals/images/objectId-0.jpeg');
         expect(this.localFS.writeFile).toBeCalledWith('/tmp/objectId-0.jpeg', 'image data');
         expect(this.imageManipulation.compress).toBeCalledWith('/tmp/objectId-0.jpeg', 960)
         expect(this.cloudStorage.upload).toBeCalledWith(

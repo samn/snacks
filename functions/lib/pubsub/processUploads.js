@@ -72,17 +72,18 @@ exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, loca
 exports.makeReprocessImages = function makeReprocessImages(localFS, cloudStorage, postsEntity, imageManipulation) {
   return function reprocessImages(event) {
     const pathsToReprocess = event.data.json.pathsToReprocess;
-    return Promise.all(_.map(pathsToReprocess, (cloudStoragePath) => {
-      const { base, name } = path.parse(cloudStoragePath);
+    return Promise.all(_.map(pathsToReprocess, (originalCloudStoragePath) => {
+      const { base, name } = path.parse(originalCloudStoragePath);
       const postId = name;
       const submissionId = postId.split('-')[0];
       const tempFilePath = `/tmp/${base}`;
+      const cloudStoragePath = `/images/${base}`;
 
       const log = new Logger(submissionId);
 
-      log.info("Reprocessing image from", cloudStoragePath);
+      log.info("Reprocessing image from", originalCloudStoragePath);
 
-      return cloudStorage.download(cloudStoragePath)
+      return cloudStorage.download(originalCloudStoragePath)
         .then(data => data[0])
         .then(saveLocallyTo(tempFilePath, localFS))
         .then(compressImage(tempFilePath, imageManipulation))

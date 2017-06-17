@@ -2,6 +2,7 @@ const _ = require('lodash');
 const path = require('path');
 
 const Logger = require('../Logger');
+const paths = require('../paths');
 
 const maxFileSizeBytes = 10 * 1000 * 1000; // 10 mb
 
@@ -43,9 +44,9 @@ exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, loca
       const extension = attachment['content-type'].split('/')[1];
       const postId = `${submissionId}-${idx}`;
       const filename = `${postId}.${extension}`;
-      const tempFilePath = `/tmp/${filename}`;
-      const originalCloudStoragePath = `/originals/images/${filename}`;
-      const cloudStoragePath = `/images/${filename}`;
+      const tempFilePath = paths.tempFilePath(filename);
+      const originalCloudStoragePath = paths.originalPath(filename);
+      const cloudStoragePath = paths.uploadPath(filename);
       // encoding should be null if binary data is expected
       return mailgun.get(attachment.url, { encoding: null })
         .then(saveLocallyTo(tempFilePath, localFS))
@@ -76,8 +77,8 @@ exports.makeReprocessImages = function makeReprocessImages(localFS, cloudStorage
       const { base, name } = path.parse(originalCloudStoragePath);
       const postId = name;
       const submissionId = postId.split('-')[0];
-      const tempFilePath = `/tmp/${base}`;
-      const cloudStoragePath = `/images/${base}`;
+      const tempFilePath = paths.tempFilePath(base);
+      const cloudStoragePath = paths.uploadPath(base);
 
       const log = new Logger(submissionId);
 
@@ -133,14 +134,14 @@ function saveToDatastore(postId, cloudStoragePath, submissionId, postsEntity) {
   };
 }
 
-function fixupImage(path, imageManipulation) {
+function fixupImage(tempFilePath, imageManipulation) {
   return function() {
-    return imageManipulation.fixup(path);
+    return imageManipulation.fixup(tempFilePath);
   }
 }
 
-function compressImage(path, imageManipulation) {
+function compressImage(tempFilePath, imageManipulation) {
   return function() {
-    return imageManipulation.compress(path, 960);
+    return imageManipulation.compress(tempFilePath, 960);
   }
 }

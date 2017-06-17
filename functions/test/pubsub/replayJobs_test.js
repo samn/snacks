@@ -4,14 +4,14 @@ const makeReplayJobs = require('../../lib/pubsub/replayJobs');
 const fakes = require('../fakes');
 const requestBody = require('../fixtures/requests/receiveEmail/body.json');
 
-function makeEvent(submissionIdsToReplay) {
+function makeEvent(requestPathsToReplay) {
   return {
     data: {
       attributes: {
         submissionId: 'objectId',
       },
       json: {
-        submissionIdsToReplay
+       requestPathsToReplay,
       },
     },
   };
@@ -27,7 +27,7 @@ describe('replayJobs', function() {
 
   it('runs successfully', function() {
     this.cloudStorage.download.resolves([JSON.stringify(requestBody)]);
-    const event = makeEvent(['objectId']);
+    const event = makeEvent(['/requests/receiveEmail/objectId.json']);
     return this.replayJobs(event)
       .then(() => {
         expect(this.cloudStorage.download).toBeCalledWith('/requests/receiveEmail/objectId.json')

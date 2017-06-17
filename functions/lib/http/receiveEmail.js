@@ -1,4 +1,5 @@
 const Logger = require('../Logger');
+const paths = require('../paths');
 const render = require('./render');
 
 module.exports = function makeReceiveEmail(pubSub, cloudStorage, localFS, objectId) {
@@ -18,22 +19,22 @@ module.exports = function makeReceiveEmail(pubSub, cloudStorage, localFS, object
     };
 
     const filename = `${submissionId}.json`;
-    const tmpPath = `/tmp/${filename}`;
-    localFS.writeJSON(tmpPath, request.body)
-      .then(uploadToCloudStorage(cloudStorage, tmpPath, filename))
+    const tempFilePath = paths.tempFilePath(filename);
+    localFS.writeJSON(tempFilePath, request.body)
+      .then(uploadToCloudStorage(cloudStorage, tempFilePath, filename))
       .then(publishMessage(pubSub, pubSubMessage))
       .then(render.success(response))
       .catch(render.failure(log, response));
   };
 };
 
-function uploadToCloudStorage(cloudStorage, tmpPath, filename) {
+function uploadToCloudStorage(cloudStorage, tempFilePath, filename) {
   return function() {
     const options = {
-      destination: `/requests/receiveEmail/${filename}`,
+      destination: paths.requestPath(filename),
       resumable: false,
     };
-    return cloudStorage.upload(tmpPath, options);
+    return cloudStorage.upload(tempFilePath, options);
   }
 }
 

@@ -1,20 +1,23 @@
 const _ = require('lodash');
+const path = require('path');
+
 const Logger = require('../Logger');
 
-// Re-enqueue messages by request id.
+// Re-enqueue messages by request json path (in cloud storage).
 // Event: {
-//  submissionIdsToReplay: [
+//  requestPathsToReplay: [
 //    "",
 //  ]
 // }
 module.exports = function makeReplayJobs(cloudStorage, pubSub) {
   return function replayJobs(event) {
-    const submissionIdsToReplay = event.data.json.submissionIdsToReplay;
-    return Promise.all(_.map(submissionIdsToReplay, (submissionId) => {
+    const requestPathsToReplay = event.data.json.requestPathsToReplay;
+    return Promise.all(_.map(requestPathsToReplay, (requestPath) => {
+      const submissionId = path.basename(requestPath, '.json');
       const log = new Logger(submissionId);
+
       log.info('Fetching message');
-      // TODO consolidate how to generate this path
-      return cloudStorage.download(`/requests/receiveEmail/${submissionId}.json`)
+      return cloudStorage.download(requestPath)
         .then(data => {
           const requestBody = JSON.parse(data[0]);
           const attachments = JSON.parse(requestBody.attachments);

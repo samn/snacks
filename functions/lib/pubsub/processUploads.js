@@ -117,6 +117,13 @@ function uploadToCloudStorage(tempFilePath, cloudStoragePath, visibility, cloudS
       public: visibility === cloudStorageVisibility.public,
       gzip: false,
     };
+
+    if (visibility === cloudStorageVisibility.public) {
+      options.metadata = {
+        cacheControl: 'public, max-age=86400',
+      };
+    }
+
     return cloudStorage.upload(tempFilePath, options)
   };
 }

@@ -61,6 +61,9 @@ describe('receivedAttachments', function() {
             resumable: false,
             public: true,
             gzip: false,
+            metadata: {
+              cacheControl: 'public, max-age=86400',
+            },
           }
         );
         expect(this.imageManipulation.getSize).toBeCalledWith('/tmp/objectId-0.jpeg')
@@ -121,6 +124,9 @@ describe('reprocessImages', function() {
             resumable: false,
             public: true,
             gzip: false,
+            metadata: {
+              cacheControl: 'public, max-age=86400',
+            },
           }
         );
         expect(this.imageManipulation.getSize).toBeCalledWith('/tmp/objectId-0.jpeg')

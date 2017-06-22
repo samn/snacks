@@ -8,10 +8,10 @@ const ObjectID = require('bson-objectid');
 const gm = require('gm').subClass({ imageMagick: true });
 
 const topics = require('./lib/pubsub/topics');
-const makeReceiveEmail = require('./lib/http/receiveEmail');
-const makeRenderApp = require('./lib/http/renderApp');
-const makeFetchPosts = require('./lib/http/fetchPosts');
-const makeMainApp = require('./lib/http/mainApp');
+const makeReceiveEmail = require('./lib/https/receiveEmail');
+const makeRenderApp = require('./lib/https/renderApp');
+const makeFetchPosts = require('./lib/https/fetchPosts');
+const makeMainApp = require('./lib/https/mainApp');
 const { makeReceivedAttachments, makeReprocessImages } = require('./lib/pubsub/processUploads');
 const makeReplayJobs = require('./lib/pubsub/replayJobs');
 const PostsEntity = require('./lib/entities/posts');

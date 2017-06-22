@@ -3,7 +3,7 @@ const expect = require('expect')
 const request = require('supertest');
 const express = require('express');
 const sinon = require('sinon');
-const makeFetchPosts = require('../../lib/http/fetchPosts');
+const makeFetchPosts = require('../../lib/https/fetchPosts');
 const PostsEntity = require('../../lib/entities/posts');
 
 describe('fetchPosts', function() {

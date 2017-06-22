@@ -3,7 +3,7 @@ const expect = require('expect')
 const request = require('supertest');
 const express = require('express');
 const bodyParser = require('body-parser');
-const makeReceiveEmail = require('../../lib/http/receiveEmail');
+const makeReceiveEmail = require('../../lib/https/receiveEmail');
 const requestBody = require('../fixtures/requests/receiveEmail/body.json');
 const fakes = require('../fakes');
 

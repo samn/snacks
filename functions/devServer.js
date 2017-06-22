@@ -7,9 +7,9 @@ const DatastoreEmulator = require('google-datastore-emulator');
 const ObjectId = require('bson-objectid');
 
 const PostsEntity = require('./lib/entities/posts');
-const makeRenderApp = require('./lib/http/renderApp');
-const makeFetchPosts = require('./lib/http/fetchPosts');
-const makeMainApp = require('./lib/http/mainApp');
+const makeRenderApp = require('./lib/https/renderApp');
+const makeFetchPosts = require('./lib/https/fetchPosts');
+const makeMainApp = require('./lib/https/mainApp');
 
 const nextApp = next({ dev: true });
 

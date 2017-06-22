@@ -1,5 +1,4 @@
 process.env.GCLOUD_PROJECT = 'snacksdev'; // Set the datastore project Id globally
-const express = require('express');
 const next = require('next')
 const { createServer } = require('http')
 const Datastore = require('@google-cloud/datastore');

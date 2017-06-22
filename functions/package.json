@@ -28,8 +28,7 @@
     "react-dom": "^15.6.1",
     "react-virtualized": "^9.8.0",
     "request": "^2.81.0",
-    "request-promise": "^4.2.1",
-    "styled-jsx": "^1.0.5"
+    "request-promise": "^4.2.1"
   },
   "private": true,
   "devDependencies": {

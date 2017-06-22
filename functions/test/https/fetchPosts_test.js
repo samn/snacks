@@ -10,11 +10,7 @@ describe('fetchPosts', function() {
   beforeEach(function() {
     this.postsEntity = sinon.stub(new PostsEntity());
 
-    const objectId = {
-      generate: _.constant('objectId'),
-    };
-
-    const fetchPosts = makeFetchPosts(objectId, this.postsEntity);
+    const fetchPosts = makeFetchPosts(this.postsEntity);
     const app = express()
       .get('/', fetchPosts);
 

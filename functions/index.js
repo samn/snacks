@@ -143,7 +143,7 @@ const replayJobs = makeReplayJobs(incomingMessagesCloudStorage, receivedAttachme
 exports.replayJobsPubSub = functions.pubsub.topic(topics.replayJobs ).onPublish(replayJobs);
 
 const nextApp = next({ dev: false }).getRequestHandler();
-const renderApp = makeRenderApp(ObjectID, nextApp, postsEntity);
-const fetchPosts = makeFetchPosts(ObjectID, postsEntity);
+const renderApp = makeRenderApp(nextApp, postsEntity);
+const fetchPosts = makeFetchPosts(postsEntity);
 const mainApp = makeMainApp(renderApp, fetchPosts);
 exports.mainApp = functions.https.onRequest(mainApp);

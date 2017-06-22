@@ -4,7 +4,6 @@ const next = require('next')
 const { createServer } = require('http')
 const Datastore = require('@google-cloud/datastore');
 const DatastoreEmulator = require('google-datastore-emulator');
-const ObjectId = require('bson-objectid');
 
 const PostsEntity = require('./lib/entities/posts');
 const makeRenderApp = require('./lib/https/renderApp');
@@ -29,8 +28,8 @@ emulator.start()
   .then(() => {
     const datastore = Datastore();
     const postsEntity = new PostsEntity(datastore, "https://storage.googleapis.com/snacks-content");
-    const renderApp = makeRenderApp(ObjectId, nextApp.getRequestHandler(), postsEntity)
-    const fetchPosts = makeFetchPosts(ObjectId, postsEntity);
+    const renderApp = makeRenderApp(nextApp.getRequestHandler(), postsEntity)
+    const fetchPosts = makeFetchPosts(postsEntity);
     const mainApp = makeMainApp(renderApp, fetchPosts);
 
     console.log('Starting dev server');

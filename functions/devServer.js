@@ -40,5 +40,5 @@ emulator.start()
   })
   .catch(err => {
     console.error('Error starting development server', err);
-    throw err
+    process.exit(1);
   });

@@ -87,6 +87,8 @@ const imageManipulation = {
     });
   },
   compress(path, maxWidth) {
+    // In testing gifs got messed up when compressed with the settings below.
+    // For now they're not processed further since they're not posted that often.
     if (path.endsWith('.gif')) {
       return Promise.resolve();
     }

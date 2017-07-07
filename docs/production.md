@@ -7,6 +7,13 @@ See [firebase.json](../firebase.json).
 ### Function Configuration
 See [functions/README.md](../functions/README.md#function-configuration) for a description of required function parameters and deployment instructions.
 
+Recommended Memory Allocations
+* `mainApp`: 512mb
+* `receivedAttachmentsPubSub`: 2gb
+* `receiveEmail`: 512mb
+* `replayEmailsPubSub`: 256mb
+* `reprocessImagesPubSub`: 2gb
+
 ### Hosting Setup
 The web application will work find when hosted on a Firebase domain, but if you wish to use your own domain you'll need to verify it in the Firebase console first.
 

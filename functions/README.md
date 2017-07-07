@@ -1,5 +1,6 @@
 ## Initial Setup
 1. `yarn install`
+1. `firebase use`
 
 ## Tests
 Written with [mocha](https://mochajs.org/) and [expect](https://github.com/mjackson/expect).

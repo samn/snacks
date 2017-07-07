@@ -13,7 +13,7 @@ const makeRenderApp = require('./lib/https/renderApp');
 const makeFetchPosts = require('./lib/https/fetchPosts');
 const makeMainApp = require('./lib/https/mainApp');
 const { makeReceivedAttachments, makeReprocessImages } = require('./lib/pubsub/processUploads');
-const makeReplayJobs = require('./lib/pubsub/replayJobs');
+const makeReplayEmails = require('./lib/pubsub/replayEmails');
 const PostsEntity = require('./lib/entities/posts');
 const Mailgun = require('./lib/clients/mailgun');
 
@@ -141,8 +141,8 @@ exports.receivedAttachmentsPubSub = functions.pubsub.topic(topics.receivedAttach
 const reprocessImages = makeReprocessImages(localFS, contentCloudStorage, postsEntity, imageManipulation);
 exports.reprocessImagesPubSub = functions.pubsub.topic(topics.reprocessImages).onPublish(reprocessImages);
 
-const replayJobs = makeReplayJobs(incomingMessagesCloudStorage, receivedAttachmentsPubSub);
-exports.replayJobsPubSub = functions.pubsub.topic(topics.replayJobs ).onPublish(replayJobs);
+const replayEmails = makeReplayEmails(incomingMessagesCloudStorage, receivedAttachmentsPubSub);
+exports.replayEmailsPubSub = functions.pubsub.topic(topics.replayEmails ).onPublish(replayEmails);
 
 const nextApp = next({ dev: false }).getRequestHandler();
 const renderApp = makeRenderApp(nextApp, postsEntity);

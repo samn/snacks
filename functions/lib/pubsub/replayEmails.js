@@ -3,14 +3,14 @@ const path = require('path');
 
 const Logger = require('../Logger');
 
-// Re-enqueue messages by request json path (in cloud storage).
+// Re-enqueue email messages by request json path (in cloud storage).
 // Event: {
 //  requestPathsToReplay: [
 //    "",
 //  ]
 // }
-module.exports = function makeReplayJobs(cloudStorage, pubSub) {
-  return function replayJobs(event) {
+module.exports = function makeReplayEmails(cloudStorage, pubSub) {
+  return function replayEmails(event) {
     const requestPathsToReplay = event.data.json.requestPathsToReplay;
     return Promise.all(_.map(requestPathsToReplay, (requestPath) => {
       const submissionId = path.basename(requestPath, '.json');

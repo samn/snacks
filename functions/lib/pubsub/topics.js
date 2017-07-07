@@ -1,3 +1,3 @@
 exports.receivedAttachments = 'received-attachments';
-exports.replayJobs = 'replay-jobs';
+exports.replayEmails = 'replay-emails';
 exports.reprocessImages = 'reprocess-images';

@@ -1,0 +1,9 @@
+language: node_js
+node_js: '6'
+cache: yarn
+script: cd functions && yarn test
+before_deploy: cd functions && yarn build
+deploy:
+  provider: firebase
+  project: ${FIREBASE_PROJECT}
+  token: ${FIREBASE_CI_TOKEN}

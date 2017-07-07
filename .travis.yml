@@ -1,6 +1,17 @@
+dist: trusty
+sudo: false
+addons:
+  apt:
+    sources:
+      - sourceline: 'deb https://dl.yarnpkg.com/debian/ stable main'
+        key_url: 'https://dl.yarnpkg.com/debian/pubkey.gpg'
+    packages:
+      - yarn
+
 language: node_js
 node_js: '6'
 cache: yarn
+
 script: cd functions && yarn test
 before_deploy: cd functions && yarn build
 deploy:

@@ -12,9 +12,10 @@ language: node_js
 node_js: '6'
 cache: yarn
 
-install: cd functions && yarn install
-script: cd functions && yarn test
-before_deploy: cd functions && yarn build
+before_install: cd functions
+install: yarn install
+script: yarn test
+before_deploy: yarn build
 deploy:
   provider: firebase
   project: ${FIREBASE_PROJECT}

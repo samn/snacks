@@ -12,6 +12,7 @@ language: node_js
 node_js: '6'
 cache: yarn
 
+install: cd functions && yarn install
 script: cd functions && yarn test
 before_deploy: cd functions && yarn build
 deploy:

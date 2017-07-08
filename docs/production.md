@@ -5,9 +5,15 @@
 See [firebase.json](../firebase.json).
 
 ### Function Configuration
-See [functions/README.md](../functions/README.md#function-configuration) for a description of required function parameters and deployment instructions.
+The following must be set with `firebase functions:config:set`:
 
-Recommended Memory Allocations
+* `mailgun.apikey`: Mailgun API key
+* `incomingmessages.bucket`: the bucket where incoming messages are saved (so they can be replayed if needed).
+* `content.bucket`: the bucket where media is stored
+* `content.baseurl`: the base of content URLs. E.g. `https://storage.googleapis.com/${content.bucket}`, or a CDN.
+
+Recommended Memory Allocations:
+
 * `mainApp`: 512mb
 * `receivedAttachmentsPubSub`: 2gb
 * `receiveEmail`: 512mb
@@ -39,3 +45,9 @@ After configuring your domain with Mailgun, you need to configure it to forward 
 Click on the "Routes" tab, then "Create Route".
 The expression type should be "Match Recipient", and the action should be "Store and notify".
 The address given to "Store and notify" should be the URL to the `receiveEmail` function (you can see that URL after running `firebase deploy`).
+
+## Deployment
+(From the `functions/` directory)
+
+1. `ASSET_PREFIX="your-domain" yarn build`
+1. `firebase deploy`

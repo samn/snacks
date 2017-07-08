@@ -1,5 +1,7 @@
 # snacks
 
+[![Build Status](https://travis-ci.org/samn/snacks.svg?branch=master)](https://travis-ci.org/samn/snacks)
+
 ## What it is
 https://snacksnacksnacksnacksnack.com/
 

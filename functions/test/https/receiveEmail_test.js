@@ -17,10 +17,10 @@ describe('receiveEmail', function() {
       generate: _.constant('objectId'),
     };
 
-    const receieveEmail = makeReceiveEmail(this.pubSub, this.cloudStorage, this.localFS, objectId);
+    const receiveEmail = makeReceiveEmail(this.pubSub, this.cloudStorage, this.localFS, objectId);
     const app = express()
       .use(bodyParser.json())
-      .post('/', receieveEmail);
+      .post('/', receiveEmail);
 
     this.makeRequest = function() {
       return request(app)

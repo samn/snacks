@@ -10,7 +10,7 @@ Written with [mocha](https://mochajs.org/) and [expect](https://github.com/mjack
 * `yarn autotest` to automatically re-run on file changes
 
 ## Development
-1. Start dev server (this automatically starts the Cloud Datastore Emulator and seeds it with sample data)
+Start dev server (this automatically starts the Cloud Datastore Emulator and seeds it with sample data)
   * `yarn dev`
 
 Currently only the webapp runs locally. Pubsub functions (e.g. for processing uploads) need to run in Firebase.

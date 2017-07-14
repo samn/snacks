@@ -47,6 +47,12 @@ exports.imageManipulation = function makeFakeImageManipulation() {
 exports.twitter = function makeFakeTwitter() {
   return sinon.stub({
     upload(mediaSize, mediaType, mediaData) { },
-    download(path) { }
+    download(path) { },
+  });
+}
+
+exports.twitter = function makeFakeTwitter() {
+  return sinon.stub({
+    upload(x, y, z) { },
   });
 }

@@ -84,21 +84,3 @@ exports.sendTweet = function sendTweet(client, mediaId) {
 // }
 
 
-function uploadToTwitter(mediaSize, mediaType, mediaData, twitter) {
-  return function() {
-    return twitter.upload(mediaSize, mediaType, mediaData)
-  }
-}
-
-function tweetImage(twitter) {
-  return function(mediaId) {
-    return twitter.tweet(mediaId);
-  }
-}
-
-exports.twitter = function makeFakeTwitter() {
-  return sinon.stub({
-    upload(mediaSize, mediaType, mediaData) { },
-    tweet(mediaId)
-  });
-}

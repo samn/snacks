@@ -39,7 +39,7 @@ describe('receivedAttachments', function() {
     });
     this.cloudStorage.upload.resolves();
     this.postsEntity.save.resolves();
-    this.twitter.upload.resolves();
+    this.localFS.readFile.returns('file data');
 
     const event = makeEvent(attachments);
     return this.receivedAttachments(event)
@@ -71,9 +71,8 @@ describe('receivedAttachments', function() {
         expect(this.imageManipulation.getSize).toBeCalledWith('/tmp/objectId-0.jpeg')
         expect(this.postsEntity.save).toBeCalledWith('objectId-0', '/images/objectId-0.jpeg', 'objectId');
         // need to check if we should use /tmp/ or /images/
-        expect(this.localFS.readFile).toBeCalledWith('/tmp/objectId-0.jpeg');
-        //console.log(this.twitter.upload.getCalls());
-        expect(this.twitter.upload).toBeCalledWith(1000, 'image/jpeg','/tmp/objectId-0.jpeg');
+        expect(this.localFS.readFile).toBeCalledWith('/tmp/objectId-0.jpeg')
+        expect(this.twitter.upload).toBeCalledWith(1000, 'image/jpeg', 'file data');
       });
   });
 

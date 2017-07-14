@@ -19,6 +19,7 @@ exports.localFS = function makeFakeLocalFS() {
   return sinon.stub({
     writeJSON(path, data) { },
     writeFile(path, data) { },
+    readFile(path) { },
   });
 }
 
@@ -40,5 +41,12 @@ exports.imageManipulation = function makeFakeImageManipulation() {
     fixup() { },
     getSize() { },
     compress() { },
+  });
+}
+
+exports.twitter = function makeFakeTwitter() {
+  return sinon.stub({
+    upload(mediaSize, mediaType, mediaData) { },
+    download(path) { }
   });
 }

@@ -16,7 +16,7 @@ const maxFileSizeBytes = 10 * 1000 * 1000; // 10 mb
   }
 ]
 */
-exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, localFS, cloudStorage, postsEntity, imageManipulation) {
+exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, localFS, cloudStorage, postsEntity, imageManipulation, twitter) {
   return function receivedAttachments(event) {
     const submissionId = event.data.attributes.submissionId;
     const log = new Logger(submissionId);
@@ -56,6 +56,7 @@ exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, loca
         .then(uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorageVisibility.public, cloudStorage))
         .then(lookupSize(tempFilePath, imageManipulation))
         .then(saveToDatastore(postId, cloudStoragePath, submissionId, postsEntity))
+        .then(uploadToTwitter(attachment.size, attachment['content-type'], tempFilePath, localFS, twitter))
         .catch((err) => {
           log.error(err);
           throw err;
@@ -152,3 +153,17 @@ function compressImage(tempFilePath, imageManipulation) {
     return imageManipulation.compress(tempFilePath, 960);
   }
 }
+
+function uploadToTwitter(mediaSize, mediaType, mediaPath, localFS, twitter) {
+  return function() {
+    const mediaData = localFS.readFile(mediaPath);
+    return twitter.upload(mediaSize, mediaType, mediaData);
+  }
+}
+
+function tweetImage(twitter) {
+  return function(mediaId) {
+    return twitter.tweet(mediaId);
+  }
+}
+

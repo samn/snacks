@@ -68,6 +68,8 @@ describe('receivedAttachments', function() {
         );
         expect(this.imageManipulation.getSize).toBeCalledWith('/tmp/objectId-0.jpeg')
         expect(this.postsEntity.save).toBeCalledWith('objectId-0', '/images/objectId-0.jpeg', 'objectId');
+        // need to check if we should use /tmp/ or /images/
+        expect(this.twtter.upload).toBeCalledWith(1000, 'image/jpeg','/tmp/objectId-0.jpeg');
       });
   });
 

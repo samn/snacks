@@ -23,11 +23,12 @@ function makeEvent(attachments) {
 describe('receivedAttachments', function() {
   beforeEach(function() {
     this.mailgun = fakes.mailgun();
+    this.twitter = fakes.twitter();
     this.localFS = fakes.localFS();
     this.cloudStorage = fakes.cloudStorage();
     this.postsEntity = sinon.stub(new PostsEntity());
     this.imageManipulation = fakes.imageManipulation();
-    this.receivedAttachments = makeReceivedAttachments(this.mailgun, this.localFS, this.cloudStorage, this.postsEntity, this.imageManipulation);
+    this.receivedAttachments = makeReceivedAttachments(this.mailgun, this.localFS, this.cloudStorage, this.postsEntity, this.imageManipulation, this.twitter);
   });
 
   it('runs successfully', function() {
@@ -38,6 +39,7 @@ describe('receivedAttachments', function() {
     });
     this.cloudStorage.upload.resolves();
     this.postsEntity.save.resolves();
+    this.localFS.readFile.returns('file data');
 
     const event = makeEvent(attachments);
     return this.receivedAttachments(event)
@@ -68,6 +70,9 @@ describe('receivedAttachments', function() {
         );
         expect(this.imageManipulation.getSize).toBeCalledWith('/tmp/objectId-0.jpeg')
         expect(this.postsEntity.save).toBeCalledWith('objectId-0', '/images/objectId-0.jpeg', 'objectId');
+        // need to check if we should use /tmp/ or /images/
+        expect(this.localFS.readFile).toBeCalledWith('/tmp/objectId-0.jpeg')
+        expect(this.twitter.upload).toBeCalledWith(1000, 'image/jpeg', 'file data');
       });
   });
 

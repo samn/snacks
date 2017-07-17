@@ -45,7 +45,7 @@ const localFS = {
   },
   writeFile(path, data) {
     return fs.writeFile(path, data);
-  }
+  },
 }
 
 // wrapper interface for easier testing

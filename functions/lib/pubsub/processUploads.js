@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const path = require('path');
+const fs = require('fs-extra');
 
 const Logger = require('../Logger');
 const paths = require('../paths');
@@ -56,7 +57,8 @@ exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, loca
         .then(uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorageVisibility.public, cloudStorage))
         .then(lookupSize(tempFilePath, imageManipulation))
         .then(saveToDatastore(postId, cloudStoragePath, submissionId, postsEntity))
-        .then(uploadToTwitter(attachment.size, attachment['content-type'], tempFilePath, localFS, twitter))
+        .then(readImageData(tempFilePath, localFS))
+        .then(uploadToTwitter(attachment.size, attachment['content-type'], twitter))
         .catch((err) => {
           log.error(err);
           throw err;
@@ -154,10 +156,15 @@ function compressImage(tempFilePath, imageManipulation) {
   }
 }
 
-function uploadToTwitter(mediaSize, mediaType, mediaPath, localFS, twitter) {
+function readImageData(mediaPath, localFS) {
   return function() {
-    const mediaData = localFS.readFile(mediaPath);
-    return twitter.upload(mediaSize, mediaType, mediaData);
+    return localFS.readFile(mediaPath);
+  }
+}
+
+function uploadToTwitter(mediaSize, mediaType, twitter) {
+  return function(mediaData) {
+    twitter.upload(mediaSize, mediaType, mediaData);
   }
 }
 

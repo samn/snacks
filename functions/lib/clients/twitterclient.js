@@ -72,15 +72,3 @@ exports.sendTweet = function sendTweet(client, mediaId) {
   });
 }
 
-// function makeTwitter(client) {
-//   return {
-//     upload(mediaSize, mediaType, mediaData) {
-//       return uploadTwitterMedia(client, mediaSize, mediaType, mediaData);
-//     },
-//     tweet(mediaId) {
-//       return sendTweet(client, mediaId);
-//     },
-//   };
-// }
-
-

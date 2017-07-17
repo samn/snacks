@@ -40,6 +40,7 @@ describe('receivedAttachments', function() {
     this.cloudStorage.upload.resolves();
     this.postsEntity.save.resolves();
     this.localFS.readFile.returns('file data');
+    this.twitter.upload.returns('image-media-id');
 
     const event = makeEvent(attachments);
     return this.receivedAttachments(event)
@@ -73,6 +74,7 @@ describe('receivedAttachments', function() {
         // need to check if we should use /tmp/ or /images/
         expect(this.localFS.readFile).toBeCalledWith('/tmp/objectId-0.jpeg')
         expect(this.twitter.upload).toBeCalledWith(1000, 'image/jpeg', 'file data');
+        expect(this.twitter.tweet).toBeCalledWith('image-media-id');
       });
   });
 

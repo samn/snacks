@@ -53,6 +53,7 @@ exports.twitter = function makeFakeTwitter() {
 
 exports.twitter = function makeFakeTwitter() {
   return sinon.stub({
-    upload(x, y, z) { },
+    upload(mediaSize, mediaType, mediaData) { },
+    tweet(mediaId) { },
   });
 }

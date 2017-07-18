@@ -28,7 +28,8 @@
     "react-dom": "^15.6.1",
     "react-virtualized": "^9.9.0",
     "request": "^2.81.0",
-    "request-promise": "^4.2.1"
+    "request-promise": "^4.2.1",
+    "twitter": "^1.7.1"
   },
   "private": true,
   "devDependencies": {

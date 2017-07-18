@@ -146,17 +146,13 @@ const contentCloudStorage = makeCloudStorage(functions.config().content.bucket);
 const postsEntity = new PostsEntity(cloudDatastore, functions.config().content.baseurl);
 const mailgun = new Mailgun(functions.config().mailgun.apikey);
 
-// const twitterClient = makeTwitterClient(
-//     firebase.config().twitter.consumersecret,
-//     firebase.config().twitter.consumerkey,
-//     firebase.config().twitter.accesstokenkey,
-//     firebase.config().twitter.accesstokensecret,
-//   );
+const twitterClient = makeTwitterClient(functions.config().twitter.consumerkey, functions.config().twitter.consumersecret, functions.config().twitter.accesstokenkey, functions.config().twitter.accesstokensecret);
+const twitter = makeTwitter(twitterClient);
 
 const receiveEmail = makeReceiveEmail(receivedAttachmentsPubSub, incomingMessagesCloudStorage, localFS, ObjectID);
 exports.receiveEmail = functions.https.onRequest(receiveEmail);
 
-const receivedAttachments = makeReceivedAttachments(mailgun, localFS, contentCloudStorage, postsEntity, imageManipulation);
+const receivedAttachments = makeReceivedAttachments(mailgun, localFS, contentCloudStorage, postsEntity, imageManipulation, twitterClient);
 exports.receivedAttachmentsPubSub = functions.pubsub.topic(topics.receivedAttachments).onPublish(receivedAttachments);
 
 const reprocessImages = makeReprocessImages(localFS, contentCloudStorage, postsEntity, imageManipulation);

@@ -60,6 +60,9 @@ const localFS = {
   writeFile(path, data) {
     return fs.writeFile(path, data);
   },
+  readFile(path) {
+    return fs.readFile(path);
+  }
 }
 
 // wrapper interface for easier testing

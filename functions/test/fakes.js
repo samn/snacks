@@ -20,6 +20,7 @@ exports.localFS = function makeFakeLocalFS() {
     writeJSON(path, data) { },
     writeFile(path, data) { },
     readFile(path) { },
+    stat(path) { },
   });
 }
 
@@ -44,12 +45,6 @@ exports.imageManipulation = function makeFakeImageManipulation() {
   });
 }
 
-exports.twitter = function makeFakeTwitter() {
-  return sinon.stub({
-    upload(mediaSize, mediaType, mediaData) { },
-    download(path) { },
-  });
-}
 
 exports.twitter = function makeFakeTwitter() {
   return sinon.stub({

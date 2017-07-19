@@ -12,7 +12,6 @@ exports.makeTwitterClient = function makeTwitterClient(consumer_key, consumer_se
 }
 
 exports.uploadTwitterMedia = function uploadTwitterMedia(client, mediaSize, mediaType, mediaData) {
-
   return initUpload() // Declare that you wish to upload some media
     .then(appendUpload) // Send the data for the media
     .then(finalizeUpload) // Declare that you are done uploading chunks
@@ -71,4 +70,3 @@ exports.sendTweet = function sendTweet(client, mediaId) {
     }
   });
 }
-

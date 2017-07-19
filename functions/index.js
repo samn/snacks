@@ -62,6 +62,9 @@ const localFS = {
   },
   readFile(path) {
     return fs.readFile(path);
+  },
+  stat(path) {
+    return fs.stat(path);
   }
 }
 
@@ -155,7 +158,7 @@ const twitter = makeTwitter(twitterClient);
 const receiveEmail = makeReceiveEmail(receivedAttachmentsPubSub, incomingMessagesCloudStorage, localFS, ObjectID);
 exports.receiveEmail = functions.https.onRequest(receiveEmail);
 
-const receivedAttachments = makeReceivedAttachments(mailgun, localFS, contentCloudStorage, postsEntity, imageManipulation, twitterClient);
+const receivedAttachments = makeReceivedAttachments(mailgun, localFS, contentCloudStorage, postsEntity, imageManipulation, twitter);
 exports.receivedAttachmentsPubSub = functions.pubsub.topic(topics.receivedAttachments).onPublish(receivedAttachments);
 
 const reprocessImages = makeReprocessImages(localFS, contentCloudStorage, postsEntity, imageManipulation);

@@ -58,7 +58,7 @@ exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, loca
         .then(lookupSize(tempFilePath, imageManipulation))
         .then(saveToDatastore(postId, cloudStoragePath, submissionId, postsEntity))
         .then(readImageData(tempFilePath, localFS))
-        .then(uploadToTwitter(attachment.size, attachment['content-type'], twitter))
+        .then(uploadToTwitter(attachment['content-type'], twitter))
         .then(tweetImage(twitter))
         .catch((err) => {
           log.error(err);
@@ -159,13 +159,30 @@ function compressImage(tempFilePath, imageManipulation) {
 
 function readImageData(mediaPath, localFS) {
   return function() {
-    return localFS.readFile(mediaPath);
+    const imageData = {}
+    return localFS.readFile(mediaPath)
+      .then((data) => {imageData.mediaData = data})
+      .then(readImageSize(mediaPath, localFS))
+      .then((data) => {imageData.mediaSize = data})
+      .then(()=> {
+        return imageData;
+      })
+      .catch((err)=>{
+        throw err;
+      });
   }
 }
 
-function uploadToTwitter(mediaSize, mediaType, twitter) {
-  return function(mediaData) {
-    return twitter.upload(mediaSize, mediaType, mediaData);
+function readImageSize(mediaPath, localFS) {
+  return function() {
+    return localFS.stat(mediaPath)
+      .then((data)=>data.size)
+  }
+}
+
+function uploadToTwitter(mediaType, twitter) {
+  return function(imageData) {
+    return twitter.upload(imageData.mediaSize, mediaType, imageData.mediaData);
   }
 }
 

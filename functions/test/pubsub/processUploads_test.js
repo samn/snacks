@@ -74,7 +74,6 @@ describe('receivedAttachments', function() {
         );
         expect(this.imageManipulation.getSize).toBeCalledWith('/tmp/objectId-0.jpeg')
         expect(this.postsEntity.save).toBeCalledWith('objectId-0', '/images/objectId-0.jpeg', 'objectId');
-        // need to check if we should use /tmp/ or /images/
         expect(this.localFS.readFile).toBeCalledWith('/tmp/objectId-0.jpeg')
         expect(this.twitter.upload).toBeCalledWith('file-size', 'image/jpeg', 'file-data');
         expect(this.twitter.tweet).toBeCalledWith('image-media-id');

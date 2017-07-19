@@ -27,7 +27,6 @@ exports.uploadTwitterMedia = function uploadTwitterMedia(client, mediaSize, medi
       }).then(data => data.media_id_string);
     }
 
-
     function appendUpload (mediaId) {
       return makePost('media/upload', {
         command      : 'APPEND',
@@ -37,14 +36,12 @@ exports.uploadTwitterMedia = function uploadTwitterMedia(client, mediaSize, medi
       }).then(data => mediaId);
     }
 
-
     function finalizeUpload (mediaId) {
       return makePost('media/upload', {
         command : 'FINALIZE',
         media_id: mediaId
       }).then(data => mediaId);
     }
-
 
     function makePost (endpoint, params) {
       return new Promise((resolve, reject) => {

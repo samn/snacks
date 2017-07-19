@@ -42,7 +42,8 @@ exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, loca
       }
 
       // content type is e.g. image/jpeg
-      const extension = attachment['content-type'].split('/')[1];
+      const contentType = attachment['content-type']
+      const extension = contentType.split('/')[1];
       const postId = `${submissionId}-${idx}`;
       const filename = `${postId}.${extension}`;
       const tempFilePath = paths.tempFilePath(filename);
@@ -58,7 +59,7 @@ exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, loca
         .then(lookupSize(tempFilePath, imageManipulation))
         .then(saveToDatastore(postId, cloudStoragePath, submissionId, postsEntity))
         .then(readImageData(tempFilePath, localFS))
-        .then(uploadToTwitter(attachment['content-type'], twitter))
+        .then(uploadToTwitter(contentType, twitter))
         .then(tweetImage(twitter))
         .catch((err) => {
           log.error(err);

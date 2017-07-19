@@ -12,6 +12,11 @@ The following must be set with `firebase functions:config:set`:
 * `content.bucket`: the bucket where media is stored
 * `content.baseurl`: the base of content URLs. E.g. `https://storage.googleapis.com/${content.bucket}`, or a CDN.
 
+Twitter credentials almost must be set with `firebase functions:config:set`:
+
+* `twitter.consumerkey`:
+* `twitter.consumersecret`: your Twitter application's consumer secret
+* `twitter.accesstokensecret`
 Recommended Memory Allocations:
 
 * `mainApp`: 512mb

@@ -152,7 +152,13 @@ const contentCloudStorage = makeCloudStorage(functions.config().content.bucket);
 const postsEntity = new PostsEntity(cloudDatastore, functions.config().content.baseurl);
 const mailgun = new Mailgun(functions.config().mailgun.apikey);
 
-const twitterClient = makeTwitterClient(functions.config().twitter.consumerkey, functions.config().twitter.consumersecret, functions.config().twitter.accesstokenkey, functions.config().twitter.accesstokensecret);
+const twitterClient = makeTwitterClient(
+  functions.config().twitter.consumerkey,
+  functions.config().twitter.consumersecret,
+  functions.config().twitter.accesstoken,
+  functions.config().twitter.accesstokensecret
+);
+
 const twitter = makeTwitter(twitterClient);
 
 const receiveEmail = makeReceiveEmail(receivedAttachmentsPubSub, incomingMessagesCloudStorage, localFS, ObjectID);

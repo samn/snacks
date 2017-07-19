@@ -1,6 +1,5 @@
 const Twitter = require('twitter')
 
-// make twitter client
 exports.makeTwitterClient = function makeTwitterClient(consumer_key, consumer_secret, access_token, access_token_secret) {
 
     return new Twitter({

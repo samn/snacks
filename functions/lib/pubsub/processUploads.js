@@ -133,6 +133,7 @@ function uploadToCloudStorage(tempFilePath, cloudStoragePath, visibility, cloudS
   };
 }
 
+// Returns the image dimensions
 function lookupSize(tempFilePath, imageManipulation) {
   return function() {
     return imageManipulation.getSize(tempFilePath);
@@ -174,6 +175,7 @@ function readImageData(mediaPath, localFS) {
   }
 }
 
+// Returns the image's size in bytes
 function readImageSize(mediaPath, localFS) {
   return function() {
     return localFS.stat(mediaPath)

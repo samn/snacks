@@ -160,27 +160,19 @@ function compressImage(tempFilePath, imageManipulation) {
 
 function readImageData(mediaPath, localFS) {
   return function() {
-    const imageData = {}
+    const imageData = {};
     return localFS.readFile(mediaPath)
-      .then((data) => {imageData.mediaData = data})
-      .then(readImageSize(mediaPath, localFS))
-      .then((data) => {imageData.mediaSize = data})
-      .then(() => {
+      .then((data) => {
+        imageData.mediaData = data;
+        imageData.mediaSize = data.length;
         return imageData;
       })
-  }
-}
-
-// Returns the image's size in bytes
-function readImageSize(mediaPath, localFS) {
-  return function() {
-    return localFS.stat(mediaPath)
-      .then((data) => data.size)
-  }
+    }
 }
 
 function uploadToTwitter(mediaType, twitter) {
   return function(imageData) {
+    console.log(imageData);
     return twitter.upload(imageData.mediaSize, mediaType, imageData.mediaData);
   }
 }

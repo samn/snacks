@@ -62,9 +62,6 @@ const localFS = {
   },
   readFile(path) {
     return fs.readFile(path);
-  },
-  stat(path) {
-    return fs.stat(path);
   }
 }
 

@@ -39,11 +39,11 @@ describe('receivedAttachments', function() {
     });
     this.cloudStorage.upload.resolves();
     this.postsEntity.save.resolves();
-    this.localFS.readFile.resolves('file-data');
-    this.localFS.stat.resolves({
-      size: 'file-size',
-    });
-    this.twitter.upload.returns('image-media-id');
+    const fakeBuffer  = {
+      length: 'file size'
+    };
+    this.localFS.readFile.resolves(fakeBuffer);
+    this.twitter.upload.returns('image mediaId');
 
     const event = makeEvent(attachments);
     return this.receivedAttachments(event)
@@ -75,8 +75,8 @@ describe('receivedAttachments', function() {
         expect(this.imageManipulation.getSize).toBeCalledWith('/tmp/objectId-0.jpeg')
         expect(this.postsEntity.save).toBeCalledWith('objectId-0', '/images/objectId-0.jpeg', 'objectId');
         expect(this.localFS.readFile).toBeCalledWith('/tmp/objectId-0.jpeg')
-        expect(this.twitter.upload).toBeCalledWith('file-size', 'image/jpeg', 'file-data');
-        expect(this.twitter.tweet).toBeCalledWith('image-media-id');
+        expect(this.twitter.upload).toBeCalledWith('file size', 'image/jpeg', fakeBuffer);
+        expect(this.twitter.tweet).toBeCalledWith('image mediaId');
       });
   });
 

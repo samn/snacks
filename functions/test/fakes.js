@@ -20,7 +20,6 @@ exports.localFS = function makeFakeLocalFS() {
     writeJSON(path, data) { },
     writeFile(path, data) { },
     readFile(path) { },
-    stat(path) { },
   });
 }
 
@@ -44,7 +43,6 @@ exports.imageManipulation = function makeFakeImageManipulation() {
     compress() { },
   });
 }
-
 
 exports.twitter = function makeFakeTwitter() {
   return sinon.stub({

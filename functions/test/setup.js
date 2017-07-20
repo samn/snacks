@@ -6,11 +6,10 @@ expect.extend({
   toBeCalledWith(...expectedArgs) {
     expect.assert(
       this.actual.calledWith(...expectedArgs),
-      "expected function %s to have been called with args %s",
+      "Expected function %s to have been called with args %s.",
       this.actual.displayName,
-      ...expectedArgs
-    );
-
+      expectedArgs
+    )
     return this;
   },
 });

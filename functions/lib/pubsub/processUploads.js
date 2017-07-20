@@ -165,7 +165,7 @@ function readImageData(mediaPath, localFS) {
       .then((data) => {imageData.mediaData = data})
       .then(readImageSize(mediaPath, localFS))
       .then((data) => {imageData.mediaSize = data})
-      .then(()=> {
+      .then(() => {
         return imageData;
       })
   }
@@ -175,7 +175,7 @@ function readImageData(mediaPath, localFS) {
 function readImageSize(mediaPath, localFS) {
   return function() {
     return localFS.stat(mediaPath)
-      .then((data)=>data.size)
+      .then((data) => data.size)
   }
 }
 

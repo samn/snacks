@@ -168,9 +168,6 @@ function readImageData(mediaPath, localFS) {
       .then(()=> {
         return imageData;
       })
-      .catch((err)=>{
-        throw err;
-      });
   }
 }
 

@@ -21,7 +21,7 @@ Recommended Memory Allocations:
 * `reprocessImagesPubSub`: 2gb
 
 ### Hosting Setup
-The web application will work find when hosted on a Firebase domain, but if you wish to use your own domain you'll need to verify it in the Firebase console first.
+The web application will work fine when hosted on a Firebase domain, but if you wish to use your own domain you'll need to verify it in the Firebase console first.
 
 ## Google Cloud Platform Configuration
 

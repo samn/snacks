@@ -3,9 +3,9 @@ const Twitter = require('twitter')
 exports.makeTwitterClient = function makeTwitterClient(consumer_key, consumer_secret, access_token, access_token_secret) {
 
     return new Twitter({
-        consumer_key       : consumer_key,
-        consumer_secret    : consumer_secret,
-        access_token_key   : access_token,
+        consumer_key: consumer_key,
+        consumer_secret: consumer_secret,
+        access_token_key: access_token,
         access_token_secret: access_token_secret,
     });
 }
@@ -21,24 +21,24 @@ exports.uploadTwitterMedia = function uploadTwitterMedia(client, mediaSize, medi
 
    function initUpload () {
       return makePost('media/upload', {
-        command    : 'INIT',
+        command: 'INIT',
         total_bytes: mediaSize,
-        media_type : mediaType,
+        media_type: mediaType,
       }).then(data => data.media_id_string);
     }
 
     function appendUpload (mediaId) {
       return makePost('media/upload', {
-        command      : 'APPEND',
-        media_id     : mediaId,
-        media        : mediaData,
+        command: 'APPEND',
+        media_id: mediaId,
+        media: mediaData,
         segment_index: 0
       }).then(data => mediaId);
     }
 
     function finalizeUpload (mediaId) {
       return makePost('media/upload', {
-        command : 'FINALIZE',
+        command: 'FINALIZE',
         media_id: mediaId
       }).then(data => mediaId);
     }

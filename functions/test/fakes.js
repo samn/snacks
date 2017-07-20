@@ -22,7 +22,7 @@ exports.localFS = function makeFakeLocalFS() {
   });
 }
 
-exports.mailgun = function makeFakeMailgin() {
+exports.mailgun = function makeFakeMailgun() {
   return sinon.stub(new Mailgun());
 }
 

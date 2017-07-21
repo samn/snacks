@@ -61,9 +61,5 @@ exports.sendTweet = function sendTweet(client, mediaId) {
     status: '',
     media_ids: mediaId
   }
-  client.post('statuses/update', status, function(error, tweet, response) {
-    if (!error) {
-      console.log(tweet);
-    }
-  });
+  return client.post('statuses/update', status);
 }

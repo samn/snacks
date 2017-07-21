@@ -172,7 +172,6 @@ function readImageData(mediaPath, localFS) {
 
 function uploadToTwitter(mediaType, twitter) {
   return function(imageData) {
-    console.log(imageData);
     return twitter.upload(imageData.mediaSize, mediaType, imageData.mediaData);
   }
 }

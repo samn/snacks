@@ -58,8 +58,7 @@ exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, loca
         .then(lookupSize(tempFilePath, imageManipulation))
         .then(saveToDatastore(postId, cloudStoragePath, submissionId, postsEntity))
         .then(readImageData(tempFilePath, localFS))
-        .then(uploadToTwitter(contentType, twitter))
-        .then(tweetImage(twitter))
+        .then(tweetMedia(contentType, twitter))
         .catch((err) => {
           log.error(err);
           throw err;
@@ -170,15 +169,9 @@ function readImageData(mediaPath, localFS) {
     }
 }
 
-function uploadToTwitter(mediaType, twitter) {
+function tweetMedia(mediaType, twitter) {
   return function(imageData) {
-    return twitter.upload(imageData.mediaSize, mediaType, imageData.mediaData);
-  }
-}
-
-function tweetImage(twitter) {
-  return function(mediaId) {
-    return twitter.tweet(mediaId);
+    return twitter.tweetMedia(imageData.mediaSize, mediaType, imageData.mediaData);
   }
 }
 

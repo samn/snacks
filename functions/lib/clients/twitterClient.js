@@ -4,10 +4,10 @@ const twitterClient = require('twitter')
 class Twitter {
   constructor(consumer_key, consumer_secret, access_token, access_token_secret) {
     this.client = new twitterClient({
-      consumer_key: process.env.twittCK, //consumer_key,
-      consumer_secret: process.env.twittCS, //consumer_secret,
-      access_token_key: process.env.twittAT, //access_token,
-      access_token_secret: process.env.twittAS //access_token_secret
+      consumer_key: consumer_key,
+      consumer_secret: consumer_secret,
+      access_token_key: access_token,
+      access_token_secret: access_token_secret
     });
   }
 

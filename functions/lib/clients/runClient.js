@@ -1,4 +1,4 @@
-const Twitter = require('./twitterClient');
+const Twitter = require('./clientTest'); //require('./twitterClient'); //
 const fdata = require('fs-extra').readFileSync('./giphy.gif');
 const size = fdata.length;
 const type = "image/gif"

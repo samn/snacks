@@ -1,6 +1,5 @@
 const twitterClient = require('twitter')
 
-
 class Twitter {
   constructor(consumer_key, consumer_secret, access_token, access_token_secret) {
     this.client = new twitterClient({
@@ -11,18 +10,13 @@ class Twitter {
     });
   }
 
-
   tweetMedia(mediaSize, mediaType, mediaData) {
     return this._initUpload(mediaSize, mediaType)
       .then((data) => {
         return this._appendUpload(data, mediaData);
       })
-      .then((data) => {
-        return this._finalizeUpload(data);
-      })
-      .then((data) => {
-        return this._sendTweet(data);
-      })
+      .then(this._finalizeUpload.bind(this))
+      .then(this._sendTweet.bind(this))
   }
 
   _initUpload(mediaSize, mediaType) {
@@ -50,12 +44,10 @@ class Twitter {
   }
 
   _makePost(endpoint, params) {
-    console.log(endpoint, params);
     return this.client.post(endpoint, params);
   }
 
   _sendTweet(mediaId) {
-    console.log('sending!');
     return this.client.post('statuses/update', {
       status: '',
       media_ids: mediaId

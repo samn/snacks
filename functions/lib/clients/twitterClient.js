@@ -49,9 +49,8 @@ exports.uploadTwitterMedia = function uploadTwitterMedia(client, mediaSize, medi
 }
 
 exports.sendTweet = function sendTweet(client, mediaId) {
-  const status = {
+  return client.post('statuses/update', {
     status: '',
     media_ids: mediaId
-  }
-  return client.post('statuses/update', status);
+  });
 }

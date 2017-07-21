@@ -43,7 +43,6 @@ describe('receivedAttachments', function() {
       length: 'file size'
     };
     this.localFS.readFile.resolves(fakeBuffer);
-    this.twitter.upload.returns('image mediaId');
 
     const event = makeEvent(attachments);
     return this.receivedAttachments(event)
@@ -75,8 +74,7 @@ describe('receivedAttachments', function() {
         expect(this.imageManipulation.getSize).toBeCalledWith('/tmp/objectId-0.jpeg')
         expect(this.postsEntity.save).toBeCalledWith('objectId-0', '/images/objectId-0.jpeg', 'objectId');
         expect(this.localFS.readFile).toBeCalledWith('/tmp/objectId-0.jpeg')
-        expect(this.twitter.upload).toBeCalledWith('file size', 'image/jpeg', fakeBuffer);
-        expect(this.twitter.tweet).toBeCalledWith('image mediaId');
+        expect(this.twitter.tweetMedia).toBeCalledWith('file size', 'image/jpeg', fakeBuffer);
       });
   });
 

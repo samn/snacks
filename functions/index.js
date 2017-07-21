@@ -16,7 +16,7 @@ const { makeReceivedAttachments, makeReprocessImages } = require('./lib/pubsub/p
 const makeReplayEmails = require('./lib/pubsub/replayEmails');
 const PostsEntity = require('./lib/entities/posts');
 const Mailgun = require('./lib/clients/mailgun');
-const { makeTwitterClient, uploadTwitterMedia, sendTweet } = require('./lib/clients/twitterClient')
+const Twitter = require('./lib/clients/twitterClient')
 
 // wrapper interface for easier testing
 function makePubSub(topic) {
@@ -38,19 +38,6 @@ function makeCloudStorage(bucket) {
     },
   };
 }
-
-// wrapper interface for easier testing
-function makeTwitter(client) {
-  return {
-    upload(mediaSize, mediaType, mediaData) {
-      return uploadTwitterMedia(client, mediaSize, mediaType, mediaData);
-    },
-    tweet(mediaId) {
-      return sendTweet(client, mediaId);
-    },
-  };
-}
-
 
 // wrapper interface for easier testing
 const localFS = {
@@ -149,14 +136,12 @@ const contentCloudStorage = makeCloudStorage(functions.config().content.bucket);
 const postsEntity = new PostsEntity(cloudDatastore, functions.config().content.baseurl);
 const mailgun = new Mailgun(functions.config().mailgun.apikey);
 
-const twitterClient = makeTwitterClient(
+const twitter = new Twitter(
   functions.config().twitter.consumerkey,
   functions.config().twitter.consumersecret,
   functions.config().twitter.accesstoken,
   functions.config().twitter.accesstokensecret
 );
-
-const twitter = makeTwitter(twitterClient);
 
 const receiveEmail = makeReceiveEmail(receivedAttachmentsPubSub, incomingMessagesCloudStorage, localFS, ObjectID);
 exports.receiveEmail = functions.https.onRequest(receiveEmail);

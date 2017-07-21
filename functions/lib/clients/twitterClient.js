@@ -44,15 +44,7 @@ exports.uploadTwitterMedia = function uploadTwitterMedia(client, mediaSize, medi
     }
 
     function makePost (endpoint, params) {
-      return new Promise((resolve, reject) => {
-        client.post(endpoint, params, (error, data, response) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(data);
-          }
-        });
-      });
+      return client.post(endpoint, params);
     }
 }
 

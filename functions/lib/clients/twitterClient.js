@@ -50,10 +50,12 @@ class Twitter {
   }
 
   _makePost(endpoint, params) {
+    console.log(endpoint, params);
     return this.client.post(endpoint, params);
   }
 
   _sendTweet(mediaId) {
+    console.log('sending!');
     return this.client.post('statuses/update', {
       status: '',
       media_ids: mediaId

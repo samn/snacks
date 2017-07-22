@@ -159,11 +159,12 @@ function compressImage(tempFilePath, imageManipulation) {
 
 function readImageData(mediaPath, localFS) {
   return function() {
-    const imageData = {};
     return localFS.readFile(mediaPath)
       .then((data) => {
-        imageData.mediaData = data;
-        imageData.mediaSize = data.length;
+        const imageData = {
+          mediaData: data,
+          mediaSize: data.length,
+        };
         return imageData;
       })
     }

@@ -43,9 +43,3 @@ exports.imageManipulation = function makeFakeImageManipulation() {
     compress() { },
   });
 }
-
-exports.twitter = function makeFakeTwitter() {
-  return sinon.stub({
-    tweetMedia(mediaSize, mediaType, mediaData) { },
-  });
-}

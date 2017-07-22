@@ -6,6 +6,7 @@ const fakes = require('../fakes');
 const requestBody = require('../fixtures/requests/receiveEmail/body.json');
 const attachments = JSON.parse(requestBody.attachments);
 const PostsEntity = require('../../lib/entities/posts');
+const Twitter = require('../../lib/clients/twitterClient');
 
 function makeEvent(attachments) {
   return {
@@ -23,7 +24,7 @@ function makeEvent(attachments) {
 describe('receivedAttachments', function() {
   beforeEach(function() {
     this.mailgun = fakes.mailgun();
-    this.twitter = fakes.twitter();
+    this.twitter = sinon.createStubInstance(Twitter);
     this.localFS = fakes.localFS();
     this.cloudStorage = fakes.cloudStorage();
     this.postsEntity = sinon.stub(new PostsEntity());

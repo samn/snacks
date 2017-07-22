@@ -12,8 +12,8 @@ class Twitter {
 
   tweetMedia(mediaSize, mediaType, mediaData) {
     return this._initUpload(mediaSize, mediaType)
-      .then((data) => {
-        return this._appendUpload(data, mediaData);
+      .then((mediaId) => {
+        return this._appendUpload(mediaId, mediaData);
       })
       .then(this._finalizeUpload.bind(this))
       .then(this._sendTweet.bind(this))

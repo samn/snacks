@@ -16,6 +16,7 @@ const { makeReceivedAttachments, makeReprocessImages } = require('./lib/pubsub/p
 const makeReplayEmails = require('./lib/pubsub/replayEmails');
 const PostsEntity = require('./lib/entities/posts');
 const Mailgun = require('./lib/clients/mailgun');
+const Twitter = require('./lib/clients/twitterClient')
 
 // wrapper interface for easier testing
 function makePubSub(topic) {
@@ -45,6 +46,9 @@ const localFS = {
   },
   writeFile(path, data) {
     return fs.writeFile(path, data);
+  },
+  readFile(path) {
+    return fs.readFile(path);
   }
 }
 
@@ -57,6 +61,7 @@ const datastore = {
     return cloudDatastore.save(entity);
   },
 }
+
 
 // wrapper interface for easier testing
 const imageManipulation = {
@@ -131,11 +136,17 @@ const contentCloudStorage = makeCloudStorage(functions.config().content.bucket);
 const postsEntity = new PostsEntity(cloudDatastore, functions.config().content.baseurl);
 const mailgun = new Mailgun(functions.config().mailgun.apikey);
 
+const twitter = new Twitter(
+  functions.config().twitter.consumerkey,
+  functions.config().twitter.consumersecret,
+  functions.config().twitter.accesstoken,
+  functions.config().twitter.accesstokensecret
+);
 
 const receiveEmail = makeReceiveEmail(receivedAttachmentsPubSub, incomingMessagesCloudStorage, localFS, ObjectID);
 exports.receiveEmail = functions.https.onRequest(receiveEmail);
 
-const receivedAttachments = makeReceivedAttachments(mailgun, localFS, contentCloudStorage, postsEntity, imageManipulation);
+const receivedAttachments = makeReceivedAttachments(mailgun, localFS, contentCloudStorage, postsEntity, imageManipulation, twitter);
 exports.receivedAttachmentsPubSub = functions.pubsub.topic(topics.receivedAttachments).onPublish(receivedAttachments);
 
 const reprocessImages = makeReprocessImages(localFS, contentCloudStorage, postsEntity, imageManipulation);

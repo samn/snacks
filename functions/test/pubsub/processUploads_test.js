@@ -6,6 +6,7 @@ const fakes = require('../fakes');
 const requestBody = require('../fixtures/requests/receiveEmail/body.json');
 const attachments = JSON.parse(requestBody.attachments);
 const PostsEntity = require('../../lib/entities/posts');
+const Twitter = require('../../lib/clients/twitterClient');
 
 function makeEvent(attachments) {
   return {
@@ -23,11 +24,12 @@ function makeEvent(attachments) {
 describe('receivedAttachments', function() {
   beforeEach(function() {
     this.mailgun = fakes.mailgun();
+    this.twitter = sinon.createStubInstance(Twitter);
     this.localFS = fakes.localFS();
     this.cloudStorage = fakes.cloudStorage();
     this.postsEntity = sinon.stub(new PostsEntity());
     this.imageManipulation = fakes.imageManipulation();
-    this.receivedAttachments = makeReceivedAttachments(this.mailgun, this.localFS, this.cloudStorage, this.postsEntity, this.imageManipulation);
+    this.receivedAttachments = makeReceivedAttachments(this.mailgun, this.localFS, this.cloudStorage, this.postsEntity, this.imageManipulation, this.twitter);
   });
 
   it('runs successfully', function() {
@@ -38,6 +40,10 @@ describe('receivedAttachments', function() {
     });
     this.cloudStorage.upload.resolves();
     this.postsEntity.save.resolves();
+    const fakeBuffer  = {
+      length: 'file size'
+    };
+    this.localFS.readFile.resolves(fakeBuffer);
 
     const event = makeEvent(attachments);
     return this.receivedAttachments(event)
@@ -68,6 +74,8 @@ describe('receivedAttachments', function() {
         );
         expect(this.imageManipulation.getSize).toBeCalledWith('/tmp/objectId-0.jpeg')
         expect(this.postsEntity.save).toBeCalledWith('objectId-0', '/images/objectId-0.jpeg', 'objectId');
+        expect(this.localFS.readFile).toBeCalledWith('/tmp/objectId-0.jpeg')
+        expect(this.twitter.tweetMedia).toBeCalledWith('file size', 'image/jpeg', fakeBuffer);
       });
   });
 

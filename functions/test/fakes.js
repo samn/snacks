@@ -19,6 +19,7 @@ exports.localFS = function makeFakeLocalFS() {
   return sinon.stub({
     writeJSON(path, data) { },
     writeFile(path, data) { },
+    readFile(path) { },
   });
 }
 

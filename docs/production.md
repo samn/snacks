@@ -8,9 +8,15 @@ See [firebase.json](../firebase.json).
 The following must be set with `firebase functions:config:set`:
 
 * `mailgun.apikey`: Mailgun API key
+
 * `incomingmessages.bucket`: the bucket where incoming messages are saved (so they can be replayed if needed).
 * `content.bucket`: the bucket where media is stored
 * `content.baseurl`: the base of content URLs. E.g. `https://storage.googleapis.com/${content.bucket}`, or a CDN.
+
+* `twitter.consumerkey`: your Twitter application's Consumer Key (API Key)
+* `twitter.consumersecret`: your Twitter application's Consumer Secret (API Secret)
+* `twitter.accesstoken`: your Twitter application's Access Token
+* `twitter.accesstokensecret`: your Twitter application's Access Token Secret
 
 Recommended Memory Allocations:
 

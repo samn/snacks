@@ -16,7 +16,7 @@ const maxFileSizeBytes = 10 * 1000 * 1000; // 10 mb
   }
 ]
 */
-exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, localFS, cloudStorage, postsEntity, imageManipulation) {
+exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, localFS, cloudStorage, postsEntity, imageManipulation, twitter) {
   return function receivedAttachments(event) {
     const submissionId = event.data.attributes.submissionId;
     const log = new Logger(submissionId);
@@ -41,7 +41,8 @@ exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, loca
       }
 
       // content type is e.g. image/jpeg
-      const extension = attachment['content-type'].split('/')[1];
+      const contentType = attachment['content-type']
+      const extension = contentType.split('/')[1];
       const postId = `${submissionId}-${idx}`;
       const filename = `${postId}.${extension}`;
       const tempFilePath = paths.tempFilePath(filename);
@@ -56,6 +57,8 @@ exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, loca
         .then(uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorageVisibility.public, cloudStorage))
         .then(lookupSize(tempFilePath, imageManipulation))
         .then(saveToDatastore(postId, cloudStoragePath, submissionId, postsEntity))
+        .then(readImageData(tempFilePath, localFS))
+        .then(tweetMedia(contentType, twitter))
         .catch((err) => {
           log.error(err);
           throw err;
@@ -128,6 +131,7 @@ function uploadToCloudStorage(tempFilePath, cloudStoragePath, visibility, cloudS
   };
 }
 
+// Returns the image dimensions
 function lookupSize(tempFilePath, imageManipulation) {
   return function() {
     return imageManipulation.getSize(tempFilePath);
@@ -152,3 +156,23 @@ function compressImage(tempFilePath, imageManipulation) {
     return imageManipulation.compress(tempFilePath, 960);
   }
 }
+
+function readImageData(mediaPath, localFS) {
+  return function() {
+    return localFS.readFile(mediaPath)
+      .then((data) => {
+        const imageData = {
+          mediaData: data,
+          mediaSize: data.length,
+        };
+        return imageData;
+      })
+    }
+}
+
+function tweetMedia(mediaType, twitter) {
+  return function(imageData) {
+    return twitter.tweetMedia(imageData.mediaSize, mediaType, imageData.mediaData);
+  }
+}
+

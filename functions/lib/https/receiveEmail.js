@@ -40,6 +40,9 @@ function uploadToCloudStorage(cloudStorage, tempFilePath, filename) {
 
 function publishMessage(pubSub, message) {
   return function() {
-    return pubSub.publish(message, { raw: true });
+    return pubSub.publish(message, {
+      raw: true,
+      timeout: 5 * 60 * 1000, // ms
+    });
   }
 }

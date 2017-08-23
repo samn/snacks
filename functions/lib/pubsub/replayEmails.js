@@ -30,7 +30,10 @@ module.exports = function makeReplayEmails(cloudStorage, pubSub) {
             },
           };
           log.info('Enqueuing attachments');
-          return pubSub.publish(message, { raw: true });
+          return pubSub.publish(message, {
+            raw: true,
+            timeout: 5 * 60 * 1000, // ms
+          });
         })
         .catch((err) => {
           log.error(err);

@@ -57,7 +57,7 @@ describe('receiveEmail', function() {
             submissionId: 'objectId',
           },
         };
-        expect(this.pubSub.publish).toBeCalledWith(pubSubMessage, { raw: true });
+        expect(this.pubSub.publish).toBeCalledWith(pubSubMessage, { raw: true, timeout: 300000 });
       });
   });
 

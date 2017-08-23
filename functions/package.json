@@ -10,19 +10,19 @@
     "seed": "node seed.js"
   },
   "dependencies": {
-    "@google-cloud/datastore": "^1.0.3",
+    "@google-cloud/datastore": "^1.1.0",
     "@google-cloud/pubsub": "^0.13.1",
     "@google-cloud/storage": "^1.2.0",
-    "babel-runtime": "6.23.0",
+    "babel-runtime": "^6.26.0",
     "bson-objectid": "^1.1.5",
-    "express": "^4.15.3",
-    "firebase-admin": "5.0.1",
-    "firebase-functions": "0.6.0",
-    "fs-extra": "4.0.0",
+    "express": "^4.15.4",
+    "firebase-admin": "^5.2.1",
+    "firebase-functions": "^0.6.2",
+    "fs-extra": "^4.0.1",
     "gm": "^1.23.0",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.4",
-    "next": "^2.4.7",
+    "next": "^3.0.6",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
@@ -36,9 +36,9 @@
     "body-parser": "^1.17.2",
     "expect": "^1.20.2",
     "google-datastore-emulator": "^1.1.0",
-    "mocha": "^3.4.2",
+    "mocha": "^3.5.0",
     "nock": "^9.0.13",
-    "sinon": "^2.3.6",
+    "sinon": "^3.2.1",
     "supertest": "^3.0.0"
   }
 }

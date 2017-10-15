@@ -136,12 +136,17 @@ const contentCloudStorage = makeCloudStorage(functions.config().content.bucket);
 const postsEntity = new PostsEntity(cloudDatastore, functions.config().content.baseurl);
 const mailgun = new Mailgun(functions.config().mailgun.apikey);
 
-const twitter = new Twitter(
-  functions.config().twitter.consumerkey,
-  functions.config().twitter.consumersecret,
-  functions.config().twitter.accesstoken,
-  functions.config().twitter.accesstokensecret
-);
+let twitter = null;
+if (firebase.config().twitter != null) {
+  twitter = new Twitter(
+    functions.config().twitter.consumerkey,
+    functions.config().twitter.consumersecret,
+    functions.config().twitter.accesstoken,
+    functions.config().twitter.accesstokensecret,
+  );
+} else {
+  console.log('No Twitter credentials found');
+}
 
 const receiveEmail = makeReceiveEmail(receivedAttachmentsPubSub, incomingMessagesCloudStorage, localFS, ObjectID);
 exports.receiveEmail = functions.https.onRequest(receiveEmail);

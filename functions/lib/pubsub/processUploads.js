@@ -172,7 +172,9 @@ function readImageData(mediaPath, localFS) {
 
 function tweetMedia(mediaType, twitter) {
   return function(imageData) {
-    return twitter.tweetMedia(imageData.mediaSize, mediaType, imageData.mediaData);
+    if (twitter) {
+      return twitter.tweetMedia(imageData.mediaSize, mediaType, imageData.mediaData);
+    }
   }
 }
 

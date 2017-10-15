@@ -142,7 +142,7 @@ if (firebase.config().twitter != null) {
     functions.config().twitter.consumerkey,
     functions.config().twitter.consumersecret,
     functions.config().twitter.accesstoken,
-    functions.config().twitter.accesstokensecret,
+    functions.config().twitter.accesstokensecret
   );
 } else {
   console.log('No Twitter credentials found');

@@ -137,7 +137,7 @@ const postsEntity = new PostsEntity(cloudDatastore, functions.config().content.b
 const mailgun = new Mailgun(functions.config().mailgun.apikey);
 
 let twitter = null;
-if (firebase.config().twitter != null) {
+if (functions.config().twitter != null) {
   twitter = new Twitter(
     functions.config().twitter.consumerkey,
     functions.config().twitter.consumersecret,

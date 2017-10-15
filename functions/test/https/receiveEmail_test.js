@@ -2,7 +2,6 @@ const _ = require('lodash');
 const expect = require('expect')
 const request = require('supertest');
 const express = require('express');
-const bodyParser = require('body-parser');
 const makeReceiveEmail = require('../../lib/https/receiveEmail');
 const requestBody = require('../fixtures/requests/receiveEmail/body.json');
 const fakes = require('../fakes');
@@ -19,7 +18,7 @@ describe('receiveEmail', function() {
 
     const receiveEmail = makeReceiveEmail(this.pubSub, this.cloudStorage, this.localFS, objectId);
     const app = express()
-      .use(bodyParser.json())
+      .use(express.json())
       .post('/', receiveEmail);
 
     this.makeRequest = function() {

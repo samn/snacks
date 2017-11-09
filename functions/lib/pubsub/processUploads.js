@@ -34,14 +34,15 @@ exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, loca
         return;
       }
 
-      // TODO stricter allow list of image formats
-      if (!attachment['content-type'].startsWith('image')) {
-        log.error(`Attachment with name ${attachment.name} has invalid content-type ( ${attachment['content-type']}, skipping.`);
+      // content type is e.g. image/jpeg
+      const contentType = attachment['content-type'];
+      // Emails with images from iOS 11 have the content-type multipart/mixed
+      if (!contentType.startsWith('image') && contentType !== 'multipart/mixed') {
+        // TODO stricter allow list of image formats
+        log.error(`Attachment with name ${attachment.name} has invalid content-type (${contentType}), skipping.`);
         return;
       }
 
-      // content type is e.g. image/jpeg
-      const contentType = attachment['content-type']
       const extension = contentType.split('/')[1];
       const postId = `${submissionId}-${idx}`;
       const filename = `${postId}.${extension}`;

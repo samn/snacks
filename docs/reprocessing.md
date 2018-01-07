@@ -7,13 +7,13 @@ Reprocessing emails or images should not result in duplicate posts, the existing
 Mailgun retains emails for up to 3 days.
 During that time they can be replayed to download and process their attachments again.
 
-`gcloud beta pubsub topics publish replay-emails '{"requestIdsToReplay": ["id"]}'`
+`gcloud beta pubsub topics publish replay-emails --message '{"requestPathsToReplay": ["path/to/json"]}'`
 
 ## Reprocess images
 An individual post can be reprocessed by its path in Google Cloud Storage.
 It is recommended that the original photo (not the recompressed image) be reprocessed.
 
-`gcloud beta pubsub topics publish reprocess-images '{"pathsToReprocess": ["id"]}'`
+`gcloud beta pubsub topics publish reprocess-images --message '{"pathsToReprocess": ["id"]}'`
 
 ## Reprocess All Images
 [scripts/reprocess-all-images.sh](../scripts/reprocess-all-images.sh) can be used to reprocess all posts.

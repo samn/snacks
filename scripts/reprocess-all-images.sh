@@ -6,5 +6,5 @@ bucket=$1
 for full_path in `gsutil ls "gs://$bucket/originals/images"`; do
   path=${full_path#gs://$bucket}
   echo "Enqueuing reprocess for $path"
-  gcloud beta pubsub topics publish reprocess-images "{\"pathsToReprocess\": [\"$path\"]}"
+  gcloud beta pubsub topics publish reprocess-images --message "{\"pathsToReprocess\": [\"$path\"]}"
 done

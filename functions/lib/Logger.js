@@ -7,6 +7,12 @@ class Logger {
     this.submissionId = submissionId;
   }
 
+  trace(...message) {
+    if (Logger.LOGGING_ENABLED) {
+      console.trace(header(this.submissionId), ...message);
+    }
+  }
+
   info(...message) {
     if (Logger.LOGGING_ENABLED) {
       console.info(header(this.submissionId), ...message);

@@ -6,21 +6,21 @@ const paths = require('../paths');
 
 const maxFileSizeBytes = 10 * 1000 * 1000; // 10 mb
 
-function makeRecordTime(startTimeMs) {
+function makeRecordTime(log, startTimeMs) {
   return function recordTime(fn) {
     return (val) => {
       const fnStartMs = new Date().getTime();
-      console.log(`Executing ${fn.name} ${fnStartMs - startTimeMs}ms after start.`)
+      log.trace(`Executing ${fn.name} ${fnStartMs - startTimeMs}ms after start.`)
       return fn(val)
         .then(
           result => {
             const now = new Date().getTime();
-            console.log(`Finished executing ${fn.name} after ${now - fnStartMs}ms`);
+            log.trace(`Finished executing ${fn.name} after ${now - fnStartMs}ms`);
             return result;
           },
           error => {
             const now = new Date().getTime();
-            console.log(`Error executing ${fn.name} after ${now - fnStartMs}ms`);
+            log.trace(`Error executing ${fn.name} after ${now - fnStartMs}ms`);
             throw error;
           }
         );
@@ -43,7 +43,7 @@ exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, loca
     const submissionId = event.data.attributes.submissionId;
     const log = new Logger(submissionId);
     const eventData = event.data.json;
-    const recordTime = makeRecordTime(new Date().getTime());
+    const recordTime = makeRecordTime(log, new Date().getTime());
 
     if (!eventData || !eventData.attachments) {
       log.info('No attachments in event data, skipping message.', eventData);
@@ -104,7 +104,6 @@ exports.makeReprocessImages = function makeReprocessImages(localFS, cloudStorage
   return function reprocessImages(event) {
     const pathsToReprocess = event.data.json.pathsToReprocess;
     return Promise.all(_.map(pathsToReprocess, (originalCloudStoragePath) => {
-      const recordTime = makeRecordTime(new Date().getTime());
       const { base, name } = path.parse(originalCloudStoragePath);
       const postId = name;
       const submissionId = postId.split('-')[0];
@@ -112,6 +111,7 @@ exports.makeReprocessImages = function makeReprocessImages(localFS, cloudStorage
       const cloudStoragePath = paths.uploadPath(base);
 
       const log = new Logger(submissionId);
+      const recordTime = makeRecordTime(log, new Date().getTime());
 
       log.info("Reprocessing image from", originalCloudStoragePath);
 

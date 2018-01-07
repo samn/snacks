@@ -20,20 +20,14 @@ module.exports = function makeReplayEmails(cloudStorage, pubSub) {
       return cloudStorage.download(requestPath)
         .then(data => {
           const requestBody = JSON.parse(data[0]);
-          const attachments = JSON.parse(requestBody.attachments);
           const message = {
-            data: {
-              attachments,
-            },
-            attributes: {
-              submissionId,
-            },
+            attachments: JSON.parse(requestBody.attachments),
+          };
+          const attributes = {
+            submissionId,
           };
           log.info('Enqueuing attachments');
-          return pubSub.publish(message, {
-            raw: true,
-            timeout: 5 * 60 * 1000, // ms
-          });
+          return pubSub.publish(message, attributes);
         })
         .catch((err) => {
           log.error(err);

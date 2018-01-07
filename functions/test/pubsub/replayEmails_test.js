@@ -40,8 +40,8 @@ describe('replayEmails', function() {
             submissionId: 'objectId',
           },
         };
-        expect(this.pubSub.publish).toBeCalledWith(pubSubMessage, { raw: true, timeout: 300000 });
-      });;
+        expect(this.pubSub.publish).toBeCalledWith(pubSubMessage.data, pubSubMessage.attributes);
+      });
   });
 });
 

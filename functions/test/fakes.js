@@ -4,7 +4,7 @@ const Mailgun = require('../lib/clients/mailgun');
 
 exports.pubSub = function makeFakePubSub() {
   return sinon.stub({
-    publish(message, options) { }
+    publish(message, attributes) { }
   });
 }
 

@@ -80,6 +80,29 @@
     string-format-obj "^1.1.0"
     through2 "^2.0.3"
 
+"@google-cloud/common@^0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/common/-/common-0.14.0.tgz#c56038297247ea72a750d51455e801710976ac43"
+  dependencies:
+    array-uniq "^1.0.3"
+    arrify "^1.0.1"
+    concat-stream "^1.6.0"
+    create-error-class "^3.0.2"
+    duplexify "^3.5.0"
+    ent "^2.2.0"
+    extend "^3.0.0"
+    google-auto-auth "^0.7.1"
+    is "^3.2.0"
+    log-driver "^1.2.5"
+    methmeth "^1.1.0"
+    modelo "^4.2.0"
+    request "^2.79.0"
+    retry-request "^3.0.0"
+    split-array-stream "^1.0.0"
+    stream-events "^1.0.1"
+    string-format-obj "^1.1.0"
+    through2 "^2.0.3"
+
 "@google-cloud/common@^0.15.0", "@google-cloud/common@^0.15.1":
   version "0.15.1"
   resolved "https://registry.yarnpkg.com/@google-cloud/common/-/common-0.15.1.tgz#a6f79535de626cc0e05b0ccda9db0c36099e47a3"
@@ -123,25 +146,28 @@
     split-array-stream "^1.0.0"
 
 "@google-cloud/datastore@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@google-cloud/datastore/-/datastore-1.1.0.tgz#386e9c9bdc4397945c8a47983821470f47041889"
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/@google-cloud/datastore/-/datastore-1.3.3.tgz#19faf363d5677b0338b779e099e27a6abfa94cbc"
   dependencies:
-    "@google-cloud/common" "^0.13.0"
-    "@google-cloud/common-grpc" "^0.4.0"
+    "@google-cloud/common" "^0.14.0"
     arrify "^1.0.0"
     concat-stream "^1.5.0"
     create-error-class "^3.0.2"
-    extend "^3.0.0"
-    google-gax "^0.13.0"
-    google-proto-files "^0.12.0"
+    extend "^3.0.1"
+    google-auto-auth "^0.9.0"
+    google-gax "^0.14.2"
+    google-proto-files "^0.13.1"
     is "^3.0.1"
     lodash.flatten "^4.2.0"
-    modelo "^4.2.0"
+    lodash.merge "^4.6.0"
     prop-assign "^1.0.0"
     propprop "^0.3.0"
+    safe-buffer "^5.1.1"
     split-array-stream "^1.0.0"
+    stream-events "^1.0.2"
+    through2 "^2.0.3"
 
-"@google-cloud/firestore@^0.10.0":
+"@google-cloud/firestore@^0.10.1":
   version "0.10.1"
   resolved "https://registry.yarnpkg.com/@google-cloud/firestore/-/firestore-0.10.1.tgz#ef6e28b25c51490290147b0a4b547c602a998768"
   dependencies:
@@ -156,20 +182,23 @@
     safe-buffer "^5.1.1"
     through2 "^2.0.3"
 
-"@google-cloud/pubsub@^0.13.1":
-  version "0.13.2"
-  resolved "https://registry.yarnpkg.com/@google-cloud/pubsub/-/pubsub-0.13.2.tgz#ca77b37711e32c9eede7308324cc005dd3e61292"
+"@google-cloud/pubsub@0.16.1":
+  version "0.16.1"
+  resolved "https://registry.yarnpkg.com/@google-cloud/pubsub/-/pubsub-0.16.1.tgz#d1cf5bf82e683c02a4c9ac7d47fb2f39933800ae"
   dependencies:
-    "@google-cloud/common" "^0.13.0"
-    "@google-cloud/common-grpc" "^0.4.0"
+    "@google-cloud/common" "^0.15.1"
     arrify "^1.0.0"
-    extend "^3.0.0"
-    google-gax "^0.13.0"
-    google-proto-files "^0.12.0"
+    async-each "^1.0.1"
+    extend "^3.0.1"
+    google-auto-auth "^0.8.1"
+    google-gax "^0.14.2"
+    google-proto-files "^0.14.1"
+    grpc "^1.7.2"
     is "^3.0.1"
-    modelo "^4.2.0"
-    propprop "^0.3.0"
-    uuid "^3.0.1"
+    lodash.merge "^4.6.0"
+    lodash.snakecase "^4.1.1"
+    protobufjs "^6.8.1"
+    uuid "^3.1.0"
 
 "@google-cloud/storage@^1.2.0", "@google-cloud/storage@^1.2.1":
   version "1.5.2"
@@ -328,7 +357,7 @@
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-2.0.0.tgz#5a7306e367c539b9f6543499de8dd519fac37a8b"
 
-"@types/node@*", "@types/node@^8.0.53", "@types/node@^8.5.5":
+"@types/node@*", "@types/node@^8.0.32", "@types/node@^8.5.5":
   version "8.5.7"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.5.7.tgz#9c498c35af354dcfbca3790fb2e81129e93cf0e2"
 
@@ -573,7 +602,7 @@ assertion-error@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/assertion-error/-/assertion-error-1.0.2.tgz#13ca515d86206da0bac66e834dd397d87581094c"
 
-async-each@^1.0.0:
+async-each@^1.0.0, async-each@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/async-each/-/async-each-1.0.1.tgz#19d386a1d9edc6e7c1c85d388aedbcc56d33602d"
 
@@ -2464,23 +2493,23 @@ find-up@^2.0.0, find-up@^2.1.0:
   dependencies:
     locate-path "^2.0.0"
 
-firebase-admin@^5.2.1:
-  version "5.7.0"
-  resolved "https://registry.yarnpkg.com/firebase-admin/-/firebase-admin-5.7.0.tgz#c8c72dc400cb2d742d0cf322f11ce138d260a424"
+firebase-admin@~5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/firebase-admin/-/firebase-admin-5.6.0.tgz#aaf21c0bf031d1ec9e35fc8f0f68b2ebd42cdc8a"
   dependencies:
     "@firebase/app" "^0.1.1"
     "@firebase/database" "^0.1.3"
-    "@google-cloud/firestore" "^0.10.0"
+    "@google-cloud/firestore" "^0.10.1"
     "@google-cloud/storage" "^1.2.1"
     "@types/google-cloud__storage" "^1.1.1"
-    "@types/node" "^8.0.53"
+    "@types/node" "^8.0.32"
     faye-websocket "0.9.3"
     jsonwebtoken "7.4.3"
     node-forge "0.7.1"
 
-firebase-functions@0.7.1:
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/firebase-functions/-/firebase-functions-0.7.1.tgz#125b950f95769ce25a44b576b5cdaddc3246b4ca"
+firebase-functions@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/firebase-functions/-/firebase-functions-0.8.0.tgz#ed6af0cc2f706d9cd23551cd85563b2e8dd4e68d"
   dependencies:
     "@types/express" "^4.0.33"
     "@types/jsonwebtoken" "^7.1.32"
@@ -2887,9 +2916,18 @@ google-auto-auth@^0.7.1:
     google-auth-library "^0.10.0"
     request "^2.79.0"
 
-google-auto-auth@^0.8.0:
+google-auto-auth@^0.8.0, google-auto-auth@^0.8.1:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/google-auto-auth/-/google-auto-auth-0.8.2.tgz#928ee8954514a2ea179de8dd4e97f04d40d13d0a"
+  dependencies:
+    async "^2.3.0"
+    gcp-metadata "^0.3.0"
+    google-auth-library "^0.12.0"
+    request "^2.79.0"
+
+google-auto-auth@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/google-auto-auth/-/google-auto-auth-0.9.0.tgz#83ca1236c39e1d4f8e497a1157d3acc5dfcf4e9a"
   dependencies:
     async "^2.3.0"
     gcp-metadata "^0.3.0"
@@ -2907,20 +2945,22 @@ google-datastore-emulator@^1.1.0:
     tree-kill "^1.1.0"
 
 google-gax@^0.13.0:
-  version "0.13.4"
-  resolved "https://registry.yarnpkg.com/google-gax/-/google-gax-0.13.4.tgz#462d0cf654b0abeef5ee5f059d0f7b6c0d0a6121"
+  version "0.13.5"
+  resolved "https://registry.yarnpkg.com/google-gax/-/google-gax-0.13.5.tgz#3a48cc52b7e164f731938f37eadd2b73f7c493d7"
   dependencies:
     extend "^3.0.0"
+    globby "^6.1.0"
     google-auto-auth "^0.5.2"
-    google-proto-files "^0.9.1"
+    google-proto-files "^0.13.1"
     grpc "^1.2"
     is-stream-ended "^0.1.0"
     lodash "^4.17.2"
     process-nextick-args "^1.0.7"
+    protobufjs "^6.8.0"
     readable-stream "^2.2.2"
     through2 "^2.0.3"
 
-google-gax@^0.14.1:
+google-gax@^0.14.1, google-gax@^0.14.2:
   version "0.14.3"
   resolved "https://registry.yarnpkg.com/google-gax/-/google-gax-0.14.3.tgz#91619583fff10f859a4ce8c4db3ec894978b47e4"
   dependencies:
@@ -2943,16 +2983,19 @@ google-p12-pem@^0.1.0:
     node-forge "^0.7.1"
 
 google-proto-files@^0.12.0:
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/google-proto-files/-/google-proto-files-0.12.0.tgz#a49075c1fcc2bd8a480186831c297605b9774b2b"
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/google-proto-files/-/google-proto-files-0.12.1.tgz#6434dc7e025a0d0c82e5f04e615c737d6a4c4387"
 
 google-proto-files@^0.13.1:
   version "0.13.1"
   resolved "https://registry.yarnpkg.com/google-proto-files/-/google-proto-files-0.13.1.tgz#fcf123637d1811612d6a4cb030fd14516b5aec4b"
 
-google-proto-files@^0.9.1:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/google-proto-files/-/google-proto-files-0.9.1.tgz#c760c79059bf62ba3ac56e1d1ba7b8d4560803be"
+google-proto-files@^0.14.1:
+  version "0.14.1"
+  resolved "https://registry.yarnpkg.com/google-proto-files/-/google-proto-files-0.14.1.tgz#6e5f15f8bd6615d73ca3fdd08cdec33363f9af89"
+  dependencies:
+    globby "^6.1.0"
+    protobufjs "^6.8.0"
 
 graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.4, graceful-fs@^4.1.6:
   version "4.1.11"
@@ -2976,7 +3019,7 @@ grpc@1.7.1:
     node-pre-gyp "^0.6.39"
     protobufjs "^5.0.0"
 
-grpc@^1.2, grpc@^1.7.1:
+grpc@^1.2, grpc@^1.7.1, grpc@^1.7.2:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/grpc/-/grpc-1.8.0.tgz#9d49f1b05c19c4a35c480bd14c632386de6bf664"
   dependencies:
@@ -3791,6 +3834,10 @@ lodash.once@^4.0.0:
 lodash.restparam@^3.0.0:
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/lodash.restparam/-/lodash.restparam-3.6.1.tgz#936a4e309ef330a7645ed4145986c85ae5b20805"
+
+lodash.snakecase@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/lodash.snakecase/-/lodash.snakecase-4.1.1.tgz#39d714a35357147837aefd64b5dcbb16becd8f8d"
 
 lodash.template@^4.0.2:
   version "4.4.0"
@@ -4718,7 +4765,7 @@ protobufjs@^5.0.0, protobufjs@^5.0.2:
     glob "^7.0.5"
     yargs "^3.10.0"
 
-protobufjs@^6.8.0:
+protobufjs@^6.8.0, protobufjs@^6.8.1:
   version "6.8.4"
   resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-6.8.4.tgz#183f90d1c4aca5f6b34a79eaedd0d89ad21f603b"
   dependencies:
@@ -5517,7 +5564,7 @@ stream-consume@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/stream-consume/-/stream-consume-0.1.0.tgz#a41ead1a6d6081ceb79f65b061901b6d8f3d1d0f"
 
-stream-events@^1.0.1:
+stream-events@^1.0.1, stream-events@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/stream-events/-/stream-events-1.0.2.tgz#abf39f66c0890a4eb795bc8d5e859b2615b590b2"
   dependencies:
@@ -5944,7 +5991,7 @@ utils-merge@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
 
-uuid@3.1.0, uuid@^3.0.0, uuid@^3.0.1, uuid@^3.1.0:
+uuid@3.1.0, uuid@^3.0.0, uuid@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.1.0.tgz#3dd3d3e790abc24d7b0d3a034ffababe28ebbc04"
 

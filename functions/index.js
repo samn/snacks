@@ -21,8 +21,9 @@ const Twitter = require('./lib/clients/twitterClient')
 // wrapper interface for easier testing
 function makePubSub(topic) {
   return {
-    publish(message, options) {
-      return gPubSub.topic(topic).publish(message, options);
+    publish(message, attributes) {
+      const encodedMessageBuffer = Buffer.from(JSON.stringify(message));
+      return gPubSub.topic(topic).publisher().publish(encodedMessageBuffer, attributes);
     },
   };
 }

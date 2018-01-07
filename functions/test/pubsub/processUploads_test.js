@@ -38,12 +38,16 @@ describe('receivedAttachments', function() {
       height: 10,
       width: 100,
     });
+    this.imageManipulation.fixup.resolves();
+    this.imageManipulation.compress.resolves();
     this.cloudStorage.upload.resolves();
     this.postsEntity.save.resolves();
     const fakeBuffer  = {
       length: 'file size'
     };
+    this.localFS.writeFile.resolves();
     this.localFS.readFile.resolves(fakeBuffer);
+    this.twitter.tweetMedia.resolves();
 
     const event = makeEvent(attachments);
     return this.receivedAttachments(event)
@@ -108,10 +112,15 @@ describe('reprocessImages', function() {
 
   it('runs successfully', function() {
     this.cloudStorage.download.resolves(['image data']);
+    this.localFS.writeFile.resolves();
     this.imageManipulation.getSize.resolves({
       height: 10,
       width: 100,
     });
+    this.imageManipulation.fixup.resolves();
+    this.imageManipulation.compress.resolves();
+    this.cloudStorage.upload.resolves();
+    this.postsEntity.save.resolves();
 
     const event = {
       data: {

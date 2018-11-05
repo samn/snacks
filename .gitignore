@@ -58,6 +58,7 @@ typings/
 .env
 
 .firebaserc
+.firebase/
 .runtimeconfig.json
 
 .next

@@ -1,8 +1,11 @@
 const functions = require('firebase-functions');
 const next = require('next')
-const gPubSub = require('@google-cloud/pubsub')();
-const gcs = require('@google-cloud/storage')();
-const cloudDatastore = require('@google-cloud/datastore')();
+const PubSub = require('@google-cloud/pubsub');
+const gPubSub = new PubSub();
+const Storage = require('@google-cloud/storage').Storage;
+const gcs = new Storage();
+const Datastore = require('@google-cloud/datastore');
+const cloudDatastore = new Datastore();
 const fs = require('fs-extra');
 const ObjectID = require('bson-objectid');
 const gm = require('gm').subClass({ imageMagick: true });
@@ -150,19 +153,19 @@ if (functions.config().twitter != null) {
 }
 
 const receiveEmail = makeReceiveEmail(receivedAttachmentsPubSub, incomingMessagesCloudStorage, localFS, ObjectID);
-exports.receiveEmail = functions.https.onRequest(receiveEmail);
+exports.receiveEmail = functions.runWith({memory: '512MB', timeoutSeconds: 60}).https.onRequest(receiveEmail);
 
 const receivedAttachments = makeReceivedAttachments(mailgun, localFS, contentCloudStorage, postsEntity, imageManipulation, twitter);
-exports.receivedAttachmentsPubSub = functions.pubsub.topic(topics.receivedAttachments).onPublish(receivedAttachments);
+exports.receivedAttachmentsPubSub = functions.runWith({memory: '2GB', timeoutSeconds: 120}).pubsub.topic(topics.receivedAttachments).onPublish(receivedAttachments);
 
 const reprocessImages = makeReprocessImages(localFS, contentCloudStorage, postsEntity, imageManipulation);
-exports.reprocessImagesPubSub = functions.pubsub.topic(topics.reprocessImages).onPublish(reprocessImages);
+exports.reprocessImagesPubSub = functions.runWith({memory: '2GB', timeoutSeconds: 120}).pubsub.topic(topics.reprocessImages).onPublish(reprocessImages);
 
 const replayEmails = makeReplayEmails(incomingMessagesCloudStorage, receivedAttachmentsPubSub);
-exports.replayEmailsPubSub = functions.pubsub.topic(topics.replayEmails ).onPublish(replayEmails);
+exports.replayEmailsPubSub = functions.runWith({memory: '256MB', timeoutSeconds: 60}).pubsub.topic(topics.replayEmails).onPublish(replayEmails);
 
 const nextApp = next({ dev: false }).getRequestHandler();
 const renderApp = makeRenderApp(nextApp, postsEntity);
 const fetchPosts = makeFetchPosts(postsEntity);
 const mainApp = makeMainApp(renderApp, fetchPosts);
-exports.mainApp = functions.https.onRequest(mainApp);
+exports.mainApp = functions.runWith({memory: '512MB', timeoutSeconds: 60}).https.onRequest(mainApp);

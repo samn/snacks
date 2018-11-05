@@ -6,13 +6,11 @@ const requestBody = require('../fixtures/requests/receiveEmail/body.json');
 
 function makeEvent(requestPathsToReplay) {
   return {
-    data: {
-      attributes: {
-        submissionId: 'objectId',
-      },
-      json: {
-       requestPathsToReplay,
-      },
+    attributes: {
+      submissionId: 'objectId',
+    },
+    json: {
+      requestPathsToReplay,
     },
   };
 }

@@ -10,8 +10,8 @@ const Logger = require('../Logger');
 //  ]
 // }
 module.exports = function makeReplayEmails(cloudStorage, pubSub) {
-  return function replayEmails(event) {
-    const requestPathsToReplay = event.data.json.requestPathsToReplay;
+  return function replayEmails(message) {
+    const requestPathsToReplay = message.json.requestPathsToReplay;
     return Promise.all(_.map(requestPathsToReplay, (requestPath) => {
       const submissionId = path.basename(requestPath, '.json');
       const log = new Logger(submissionId);

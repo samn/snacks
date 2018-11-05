@@ -39,10 +39,10 @@ function makeRecordTime(log, startTimeMs) {
 ]
 */
 exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, localFS, cloudStorage, postsEntity, imageManipulation, twitter) {
-  return function receivedAttachments(event) {
-    const submissionId = event.data.attributes.submissionId;
+  return function receivedAttachments(message) {
+    const submissionId = message.attributes.submissionId;
     const log = new Logger(submissionId);
-    const eventData = event.data.json;
+    const eventData = message.json;
     const recordTime = makeRecordTime(log, new Date().getTime());
 
     if (!eventData || !eventData.attachments) {
@@ -101,8 +101,8 @@ exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, loca
 //  ]
 // }
 exports.makeReprocessImages = function makeReprocessImages(localFS, cloudStorage, postsEntity, imageManipulation) {
-  return function reprocessImages(event) {
-    const pathsToReprocess = event.data.json.pathsToReprocess;
+  return function reprocessImages(message) {
+    const pathsToReprocess = message.json.pathsToReprocess;
     return Promise.all(_.map(pathsToReprocess, (originalCloudStoragePath) => {
       const { base, name } = path.parse(originalCloudStoragePath);
       const postId = name;

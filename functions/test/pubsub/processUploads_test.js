@@ -10,13 +10,11 @@ const Twitter = require('../../lib/clients/twitterClient');
 
 function makeEvent(attachments) {
   return {
-    data: {
-      attributes: {
-        submissionId: 'objectId',
-      },
-      json: {
-        attachments,
-      },
+    attributes: {
+      submissionId: 'objectId',
+    },
+    json: {
+      attachments,
     },
   };
 }
@@ -123,10 +121,8 @@ describe('reprocessImages', function() {
     this.postsEntity.save.resolves();
 
     const event = {
-      data: {
-        json: {
-          pathsToReprocess: ["/originals/images/objectId-0.jpeg"],
-        }
+      json: {
+        pathsToReprocess: ["/originals/images/objectId-0.jpeg"],
       }
     };
     return this.reprocessImages(event)

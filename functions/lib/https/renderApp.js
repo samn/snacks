@@ -7,7 +7,8 @@ module.exports = function makeRenderApp(nextApp, postsEntity) {
     request.dependencies = {
       postsEntity,
     };
-    return nextApp(request, response);
+
+    return nextApp.prepare().then(() => nextApp.getRequestHandler()(request, response));
   };
 }
 

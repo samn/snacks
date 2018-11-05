@@ -22,12 +22,12 @@ console.log('Starting cloud datastore emulator');
 emulator.start()
   .then(() => {
     const seed = require('./seed');
-    return Promise.all([nextApp.prepare(), seed()])
+    return seed();
   })
   .then(() => {
     const datastore = Datastore();
     const postsEntity = new PostsEntity(datastore, "https://storage.googleapis.com/snacks-content");
-    const renderApp = makeRenderApp(nextApp.getRequestHandler(), postsEntity)
+    const renderApp = makeRenderApp(nextApp, postsEntity)
     const fetchPosts = makeFetchPosts(postsEntity);
     const mainApp = makeMainApp(renderApp, fetchPosts);
 

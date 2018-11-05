@@ -164,7 +164,7 @@ exports.reprocessImagesPubSub = functions.runWith({memory: '2GB', timeoutSeconds
 const replayEmails = makeReplayEmails(incomingMessagesCloudStorage, receivedAttachmentsPubSub);
 exports.replayEmailsPubSub = functions.runWith({memory: '256MB', timeoutSeconds: 60}).pubsub.topic(topics.replayEmails).onPublish(replayEmails);
 
-const nextApp = next({ dev: false }).getRequestHandler();
+const nextApp = next({ dev: false });
 const renderApp = makeRenderApp(nextApp, postsEntity);
 const fetchPosts = makeFetchPosts(postsEntity);
 const mainApp = makeMainApp(renderApp, fetchPosts);

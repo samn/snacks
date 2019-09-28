@@ -6,27 +6,6 @@ const paths = require('../paths');
 
 const maxFileSizeBytes = 10 * 1000 * 1000; // 10 mb
 
-function makeRecordTime(log, startTimeMs) {
-  return function recordTime(fn) {
-    return (val) => {
-      const fnStartMs = new Date().getTime();
-      log.trace(`Executing ${fn.name} ${fnStartMs - startTimeMs}ms after start.`)
-      return fn(val)
-        .then(
-          result => {
-            const now = new Date().getTime();
-            log.trace(`Finished executing ${fn.name} after ${now - fnStartMs}ms`);
-            return result;
-          },
-          error => {
-            const now = new Date().getTime();
-            log.trace(`Error executing ${fn.name} after ${now - fnStartMs}ms`);
-            throw error;
-          }
-        );
-    };
-  };
-};
 
 /* Attachments payload:
 [
@@ -43,7 +22,6 @@ exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, loca
     const submissionId = message.attributes.submissionId;
     const log = new Logger(submissionId);
     const eventData = message.json;
-    const recordTime = makeRecordTime(log, new Date().getTime());
 
     if (!eventData || !eventData.attachments) {
       log.info('No attachments in event data, skipping message.', eventData);
@@ -73,20 +51,17 @@ exports.makeReceivedAttachments = function makeReceivedAttachments(mailgun, loca
       const originalCloudStoragePath = paths.originalPath(filename);
       const cloudStoragePath = paths.uploadPath(filename);
       // encoding should be null if binary data is expected
-      const first = mailgun.get(attachment.url, { encoding: null });
-      const fns = [
-        saveLocallyTo(tempFilePath, localFS),
-        fixupImage(tempFilePath, imageManipulation),
-        uploadToCloudStorage(tempFilePath, originalCloudStoragePath, cloudStorageVisibility.private, cloudStorage),
-        compressImage(tempFilePath, imageManipulation),
-        uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorageVisibility.public, cloudStorage),
-        lookupSize(tempFilePath, imageManipulation),
-        saveToDatastore(postId, cloudStoragePath, submissionId, postsEntity),
-        readImageData(tempFilePath, localFS),
-        tweetMedia(contentType, twitter),
-      ];
-      return fns.reduce((p, fn) => p.then(recordTime(fn)), first)
-        .catch((err) => {
+      return mailgun.get(attachment.url, { encoding: null })
+        .then(saveLocallyTo(tempFilePath, localFS))
+        .then(fixupImage(tempFilePath, imageManipulation))
+        .then(uploadToCloudStorage(tempFilePath, originalCloudStoragePath, cloudStorageVisibility.private, cloudStorage))
+        .then(compressImage(tempFilePath, imageManipulation))
+        .then(uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorageVisibility.public, cloudStorage))
+        .then(lookupSize(tempFilePath, imageManipulation))
+        .then(saveToDatastore(postId, cloudStoragePath, submissionId, postsEntity))
+        .then(readImageData(tempFilePath, localFS))
+        .then(tweetMedia(contentType, twitter))
+        .catch(err => {
           log.error(err);
           throw err;
         });
@@ -111,19 +86,15 @@ exports.makeReprocessImages = function makeReprocessImages(localFS, cloudStorage
       const cloudStoragePath = paths.uploadPath(base);
 
       const log = new Logger(submissionId);
-      const recordTime = makeRecordTime(log, new Date().getTime());
 
       log.info("Reprocessing image from", originalCloudStoragePath);
 
-      const first = cloudStorage.download(originalCloudStoragePath).then(data => data[0]);
-      const fns = [
-        saveLocallyTo(tempFilePath, localFS),
-        compressImage(tempFilePath, imageManipulation),
-        uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorageVisibility.public, cloudStorage),
-        lookupSize(tempFilePath, imageManipulation),
-        saveToDatastore(postId, cloudStoragePath, submissionId, postsEntity),
-      ];
-      return fns.reduce((p, fn) => p.then(recordTime(fn)), first)
+      return cloudStorage.download(originalCloudStoragePath).then(data => data[0])
+        .then(saveLocallyTo(tempFilePath, localFS))
+        .then(compressImage(tempFilePath, imageManipulation))
+        .then(uploadToCloudStorage(tempFilePath, cloudStoragePath, cloudStorageVisibility.public, cloudStorage))
+        .then(lookupSize(tempFilePath, imageManipulation))
+        .then(saveToDatastore(postId, cloudStoragePath, submissionId, postsEntity))
         .catch((err) => {
           log.error(err);
           throw err;

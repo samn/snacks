@@ -65,8 +65,12 @@ class PostsEntity {
   _processResults(results) {
     const posts = results[0];
     return _.map(posts, (post) => {
+      let imagePath = post.image_path;
+      if (!imagePath.startsWith('/')) {
+        imagePath = `/${imagePath}`;
+      }
       return _.extend({}, post, {
-        image_url: `${this.contentBaseUrl}${post.image_path}`,
+        image_url: `${this.contentBaseUrl}${imagePath}`,
       });
     });
   }

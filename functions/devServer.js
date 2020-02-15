@@ -1,7 +1,7 @@
 process.env.GCLOUD_PROJECT = 'snacksdev'; // Set the datastore project Id globally
 const next = require('next')
-const { createServer } = require('http')
-const Datastore = require('@google-cloud/datastore');
+const {createServer } = require('http')
+const {Datastore} = require('@google-cloud/datastore');
 const DatastoreEmulator = require('google-datastore-emulator');
 
 const PostsEntity = require('./lib/entities/posts');
@@ -11,7 +11,7 @@ const makeMainApp = require('./lib/https/mainApp');
 
 const nextApp = next({ dev: true });
 
-const emulator = new DatastoreEmulator({ port: 9021 });
+const emulator = new DatastoreEmulator({ debug: true });
 
 process.on('SIGINT', () => {
   console.log('Stopping emulator');
@@ -21,11 +21,12 @@ process.on('SIGINT', () => {
 console.log('Starting cloud datastore emulator');
 emulator.start()
   .then(() => {
+    console.log('seeding');
     const seed = require('./seed');
     return seed();
   })
   .then(() => {
-    const datastore = Datastore();
+    const datastore = new Datastore();
     const postsEntity = new PostsEntity(datastore, "https://storage.googleapis.com/snacks-content");
     const renderApp = makeRenderApp(nextApp, postsEntity)
     const fetchPosts = makeFetchPosts(postsEntity);

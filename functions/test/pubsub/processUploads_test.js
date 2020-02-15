@@ -55,7 +55,7 @@ describe('receivedAttachments', function() {
         expect(this.cloudStorage.upload).toBeCalledWith(
           '/tmp/objectId-0.jpeg',
           {
-            destination: '/originals/images/objectId-0.jpeg',
+            destination: 'originals/images/objectId-0.jpeg',
             resumable: false,
             public: false,
             gzip: false,
@@ -65,7 +65,7 @@ describe('receivedAttachments', function() {
         expect(this.cloudStorage.upload).toBeCalledWith(
           '/tmp/objectId-0.jpeg',
           {
-            destination: '/images/objectId-0.jpeg',
+            destination: 'images/objectId-0.jpeg',
             resumable: false,
             public: true,
             gzip: false,
@@ -75,7 +75,7 @@ describe('receivedAttachments', function() {
           }
         );
         expect(this.imageManipulation.getSize).toBeCalledWith('/tmp/objectId-0.jpeg')
-        expect(this.postsEntity.save).toBeCalledWith('objectId-0', '/images/objectId-0.jpeg', 'objectId');
+        expect(this.postsEntity.save).toBeCalledWith('objectId-0', 'images/objectId-0.jpeg', 'objectId');
         expect(this.localFS.readFile).toBeCalledWith('/tmp/objectId-0.jpeg')
         expect(this.twitter.tweetMedia).toBeCalledWith('file size', 'image/jpeg', fakeBuffer);
       });
@@ -133,7 +133,7 @@ describe('reprocessImages', function() {
         expect(this.cloudStorage.upload).toBeCalledWith(
           '/tmp/objectId-0.jpeg',
           {
-            destination: '/images/objectId-0.jpeg',
+            destination: 'images/objectId-0.jpeg',
             resumable: false,
             public: true,
             gzip: false,
@@ -143,7 +143,7 @@ describe('reprocessImages', function() {
           }
         );
         expect(this.imageManipulation.getSize).toBeCalledWith('/tmp/objectId-0.jpeg')
-        expect(this.postsEntity.save).toBeCalledWith('objectId-0', '/images/objectId-0.jpeg', 'objectId');
+        expect(this.postsEntity.save).toBeCalledWith('objectId-0', 'images/objectId-0.jpeg', 'objectId');
       });
   });
 });

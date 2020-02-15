@@ -1,10 +1,10 @@
 const functions = require('firebase-functions');
 const next = require('next')
-const PubSub = require('@google-cloud/pubsub');
+const {PubSub} = require('@google-cloud/pubsub');
 const gPubSub = new PubSub();
-const Storage = require('@google-cloud/storage').Storage;
+const {Storage} = require('@google-cloud/storage');
 const gcs = new Storage();
-const Datastore = require('@google-cloud/datastore');
+const {Datastore} = require('@google-cloud/datastore');
 const cloudDatastore = new Datastore();
 const fs = require('fs-extra');
 const ObjectID = require('bson-objectid');
@@ -26,7 +26,7 @@ function makePubSub(topic) {
   return {
     publish(message, attributes) {
       const encodedMessageBuffer = Buffer.from(JSON.stringify(message));
-      return gPubSub.topic(topic).publisher().publish(encodedMessageBuffer, attributes);
+      return gPubSub.topic(topic).publish(encodedMessageBuffer, attributes);
     },
   };
 }

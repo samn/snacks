@@ -1,5 +1,5 @@
 exports.requestPath = function requestPath(filename) {
-  return `/requests/receiveEmail/${filename}`;
+  return `requests/receiveEmail/${filename}`;
 }
 
 exports.tempFilePath = function tempFilePath(filename) {
@@ -7,9 +7,9 @@ exports.tempFilePath = function tempFilePath(filename) {
 }
 
 exports.originalPath = function originalPath(filename) {
-  return `/originals/images/${filename}`;
+  return `originals/images/${filename}`;
 }
 
 exports.uploadPath = function uploadPath(filename) {
-  return  `/images/${filename}`;
+  return  `images/${filename}`;
 }

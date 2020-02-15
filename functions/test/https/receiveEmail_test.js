@@ -43,7 +43,7 @@ describe('receiveEmail', function() {
         expect(this.cloudStorage.upload).toBeCalledWith(
           '/tmp/objectId.json',
           {
-            destination: '/requests/receiveEmail/objectId.json',
+            destination: 'requests/receiveEmail/objectId.json',
             resumable: false,
           }
         );
